@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from .db import db
+from .modelsProduct import Product
 
 
 class User(db.Model):
@@ -22,7 +23,7 @@ class User(db.Model):
     review_sellers = db.relationship("ReviewSeller", backref="user", lazy=True)
     orders = db.relationship("Order", backref="user", lazy=True)
     marketts_transactions = db.relationship(
-        "MarkettTransaction", backref="user", lazy=True
+        "Marketts_transaction", backref="user", lazy=True
     )
     wishlists = db.relationship("Wishlist", backref="user", lazy=True)
 
@@ -114,7 +115,7 @@ class ReviewProduct(db.Model):
     review_date = db.Column(db.Date, unique=False, nullable=False)
 
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    product_id = db.Column(db.Integer, db.ForeignKey("product.id"))
+    product_id = db.Column(db.Integer, db.ForeignKey("seller.id"))
 
     def __repr__(self):
         return f"<ReviewProduct {self.review}>"
@@ -152,25 +153,3 @@ class ReviewSeller(db.Model):
             "user_id": self.user_id,
             "seller_id": self.seller_id,
         }
-
-
-# from flask_sqlalchemy import SQLAlchemy
-# from .db import db
-
-
-# class User(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     email = db.Column(db.String(120), unique=True, nullable=False)
-#     password = db.Column(db.String(256), unique=False, nullable=False)
-#     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
-#     imagen_id = db.relationship("Imagen")
-
-#     def __repr__(self):
-#         return f'<User {self.email}>'
-
-#     def serialize(self):
-#         return {
-#             "id": self.id,
-#             "email": self.email,
-#             # do not serialize the password, its a security breach
-#         }
