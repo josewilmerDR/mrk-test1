@@ -10,6 +10,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(256), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
+    is_seller = db.Column(db.Boolean(), unique=False, nullable=False)
     profile_image = db.Column(db.String(256), unique=False, nullable=True)
     otp = db.Column(db.String(256), unique=False, nullable=True)
     otp_timestamp = db.Column(db.String(256), unique=False, nullable=True)
@@ -61,21 +62,22 @@ class Country(db.Model):
 class Seller(db.Model):
     __tablename__ = "seller"
     id = db.Column(db.Integer, primary_key=True)
-    seller_name = db.Column(db.String(120), unique=False, nullable=False)
-    seller_description = db.Column(db.String(120), unique=False, nullable=False)
-    seller_image = db.Column(db.String(120), unique=False, nullable=False)
-    seller_address = db.Column(db.String(120), unique=False, nullable=False)
-    seller_phone = db.Column(db.String(120), unique=False, nullable=False)
-    seller_email = db.Column(db.String(120), unique=False, nullable=False)
-    seller_website = db.Column(db.String(120), unique=False, nullable=False)
-    seller_facebook = db.Column(db.String(120), unique=False, nullable=False)
-    seller_instagram = db.Column(db.String(120), unique=False, nullable=False)
-    seller_twitter = db.Column(db.String(120), unique=False, nullable=False)
-    seller_whatsapp = db.Column(db.String(120), unique=False, nullable=False)
-    seller_linkedin = db.Column(db.String(120), unique=False, nullable=False)
-    seller_pinterest = db.Column(db.String(120), unique=False, nullable=False)
-    seller_rating = db.Column(db.String(120), unique=False, nullable=False)
+    name = db.Column(db.String(120), unique=False, nullable=False)
+    description = db.Column(db.String(120), unique=False, nullable=False)
+    image = db.Column(db.String(120), unique=False, nullable=True)
+    address = db.Column(db.String(120), unique=False, nullable=False)
+    phone = db.Column(db.String(120), unique=False, nullable=True)
+    email = db.Column(db.String(120), unique=False, nullable=False)
+    website = db.Column(db.String(120), unique=False, nullable=True)
+    facebook = db.Column(db.String(120), unique=False, nullable=True)
+    instagram = db.Column(db.String(120), unique=False, nullable=True)
+    twitter = db.Column(db.String(120), unique=False, nullable=True)
+    whatsapp = db.Column(db.String(120), unique=False, nullable=True)
+    linkedin = db.Column(db.String(120), unique=False, nullable=True)
+    pinterest = db.Column(db.String(120), unique=False, nullable=True)
+    rating = db.Column(db.String(120), unique=False, nullable=True)
     tax_id = db.Column(db.String(120), unique=False, nullable=False)
+    # country_id = db.Column(db.Integer, db.ForeignKey("country.id"))
 
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
@@ -151,6 +153,26 @@ class ReviewSeller(db.Model):
             "review_date": self.review_date,
             "user_id": self.user_id,
             "seller_id": self.seller_id,
+        }
+
+
+class TokenBlokedList(db.Model):
+    __tablename__ = "token_bloked_list"
+    id = db.Column(db.Integer, primary_key=True)
+    token = db.Column(db.String(250), unique=True, nullable=False)
+    email = db.Column(
+        db.String(120), unique=False, nullable=False
+    )  # Se recomienda el uso del ID en lugar del email, se hace aquí como práctica. Igual, podría ser un ForengnKey
+    create_at = db.Column(db.DateTime, nullable=False)
+    is_blocked = db.Column(db.Boolean, default=True)
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "token": self.token,
+            "email": self.email,
+            "create_at": self.create_at,
+            "is_blocked": self.is_blocked,
         }
 
 

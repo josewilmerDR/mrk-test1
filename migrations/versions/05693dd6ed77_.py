@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 81fad0d41dfb
+Revision ID: 05693dd6ed77
 Revises: 
-Create Date: 2023-06-01 20:01:19.713618
+Create Date: 2023-06-09 09:40:09.646528
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '81fad0d41dfb'
+revision = '05693dd6ed77'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -44,6 +44,15 @@ def upgrade():
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
     )
+    op.create_table('token_bloked_list',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('token', sa.String(length=250), nullable=False),
+    sa.Column('email', sa.String(length=120), nullable=False),
+    sa.Column('create_at', sa.DateTime(), nullable=False),
+    sa.Column('is_blocked', sa.Boolean(), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('token')
+    )
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=120), nullable=False),
@@ -51,6 +60,7 @@ def upgrade():
     sa.Column('email', sa.String(length=120), nullable=False),
     sa.Column('password', sa.String(length=256), nullable=False),
     sa.Column('is_active', sa.Boolean(), nullable=False),
+    sa.Column('is_seller', sa.Boolean(), nullable=False),
     sa.Column('profile_image', sa.String(length=256), nullable=True),
     sa.Column('otp', sa.String(length=256), nullable=True),
     sa.Column('otp_timestamp', sa.String(length=256), nullable=True),
@@ -92,20 +102,20 @@ def upgrade():
     )
     op.create_table('seller',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('seller_name', sa.String(length=120), nullable=False),
-    sa.Column('seller_description', sa.String(length=120), nullable=False),
-    sa.Column('seller_image', sa.String(length=120), nullable=False),
-    sa.Column('seller_address', sa.String(length=120), nullable=False),
-    sa.Column('seller_phone', sa.String(length=120), nullable=False),
-    sa.Column('seller_email', sa.String(length=120), nullable=False),
-    sa.Column('seller_website', sa.String(length=120), nullable=False),
-    sa.Column('seller_facebook', sa.String(length=120), nullable=False),
-    sa.Column('seller_instagram', sa.String(length=120), nullable=False),
-    sa.Column('seller_twitter', sa.String(length=120), nullable=False),
-    sa.Column('seller_whatsapp', sa.String(length=120), nullable=False),
-    sa.Column('seller_linkedin', sa.String(length=120), nullable=False),
-    sa.Column('seller_pinterest', sa.String(length=120), nullable=False),
-    sa.Column('seller_rating', sa.String(length=120), nullable=False),
+    sa.Column('name', sa.String(length=120), nullable=False),
+    sa.Column('description', sa.String(length=120), nullable=False),
+    sa.Column('image', sa.String(length=120), nullable=True),
+    sa.Column('address', sa.String(length=120), nullable=False),
+    sa.Column('phone', sa.String(length=120), nullable=True),
+    sa.Column('email', sa.String(length=120), nullable=False),
+    sa.Column('website', sa.String(length=120), nullable=True),
+    sa.Column('facebook', sa.String(length=120), nullable=True),
+    sa.Column('instagram', sa.String(length=120), nullable=True),
+    sa.Column('twitter', sa.String(length=120), nullable=True),
+    sa.Column('whatsapp', sa.String(length=120), nullable=True),
+    sa.Column('linkedin', sa.String(length=120), nullable=True),
+    sa.Column('pinterest', sa.String(length=120), nullable=True),
+    sa.Column('rating', sa.String(length=120), nullable=True),
     sa.Column('tax_id', sa.String(length=120), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
@@ -219,6 +229,7 @@ def downgrade():
     op.drop_table('markett_transaction')
     op.drop_table('imagen')
     op.drop_table('user')
+    op.drop_table('token_bloked_list')
     op.drop_table('favoritos')
     op.drop_table('delivery_address')
     op.drop_table('country')

@@ -8,10 +8,13 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from api.utils import APIException, generate_sitemap
 from api.models import db
-from api.routes import api
+
+# from api.routes import api
+from api.routesUser import api
+
 from api.admin import setup_admin
 from api.commands import setup_commands
-
+from api.routesSeller import routes_seller
 from api.extensions import jwt, bcrypt
 
 # from models import Person
@@ -54,8 +57,9 @@ setup_admin(app)
 # add the admin
 setup_commands(app)
 
-# Add all endpoints form the API with a "api" prefix
+# Add all endpoints form the API with a "api" preseller
 app.register_blueprint(api, url_prefix="/api")
+app.register_blueprint(routes_seller, url_prefix="/routes_seller")
 
 
 # Handle/serialize errors like a JSON object

@@ -1,4 +1,6 @@
-import * as React from "react";
+import React, { useContext } from "react";
+import { Context } from "../store/appContext";
+
 import { styled, alpha } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -16,6 +18,12 @@ import MailIcon from "@mui/icons-material/Mail";
 import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import Button from '@mui/material/Button';
+import { Link } from "@mui/material/";
+import { useNavigate } from "react-router-dom";
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import SvgIcon from '@mui/material/SvgIcon';
+
 
 const theme = createTheme({
   palette: {
@@ -76,10 +84,29 @@ function Navbar() {
   const isMenuOpen = Boolean(anchorEl);
   const isMenuOpenOne = Boolean(menuAnchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
+  const { store, actions } = useContext(Context);
   const handleMenuOpenOne = (event) => {
     setMenuAnchorEl(event.currentTarget);
   };
+
+  const navigate = useNavigate();
+  const goToRegister = () => {
+    navigate("/register")
+  }
+  const goToLogin = () => {
+    navigate("/Login")
+  }
+  const goToMyAccount = () => {
+    navigate("/myAccount")
+    handleMenuClose();
+  }
+  const goToMyProfile = () => {
+    navigate("/myProfile")
+  }
+  const goToMyAccountVendor = () => {
+    navigate("/dashboardVendor")
+  }
+
 
   const handleMenuCloseOne = () => {
     setMenuAnchorEl(null);
@@ -120,8 +147,9 @@ function Navbar() {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-      <MenuItem onClick={handleMenuClose}>My account</MenuItem>
+      <MenuItem onClick={goToMyProfile}>Perfll</MenuItem>
+      <MenuItem onClick={goToMyAccount}>Mi cuenta</MenuItem>
+      <MenuItem onClick={goToMyAccountVendor}>Cuenta de vendedor</MenuItem>
     </Menu>
   );
 
@@ -229,8 +257,6 @@ function Navbar() {
               }}
             />
           </Box>
-
-
           <Search sx={{ minWidth: "225px", height: "35px", flex: { md: "1 1 75%" } }}>
             <SearchIconWrapper>
               <SearchIcon />
@@ -243,7 +269,7 @@ function Navbar() {
             />
           </Search>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: "none", md: "flex" }, width: "75px", flex: { md: "0 1 15%" } }}>
+          {store.userLogin ? <Box sx={{ display: { xs: "none", md: "flex" }, width: "75px", flex: { md: "0 1 15%" } }}>
             <IconButton
               size="large"
               aria-label="show 4 new mails"
@@ -273,7 +299,14 @@ function Navbar() {
             >
               <AccountCircle />
             </IconButton>
-          </Box>
+          </Box> : <div >
+            <Button onClick={goToRegister}>Registarme</Button>
+            <Button onClick={goToLogin}>Login</Button>
+          </div>
+          }
+          <Badge badgeContent={17} color="error">
+            <ShoppingCartIcon style={{ fontSize: "2rem", color: "gold" }} />
+          </Badge>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton
               size="large"
