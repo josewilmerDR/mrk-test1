@@ -14,7 +14,8 @@ import Register from "./pages/register.jsx";
 import Login from "./pages/login.jsx";
 import MyAccount from "./pages/myAccount.jsx";
 import Dashboard from "./pages/dashboard/Dashboard";
-import ExampleApp from "./pages/exampleApp";
+import CreateSeller from "./pages/createSeller.jsx";
+import DashboardProduct from "./pages/dashboard/DashboardProducts";
 //create your first component
 const Layout = () => {
   //the basename is used when your project is published in a subdirectory and not in the root of the domain
@@ -31,7 +32,9 @@ const Layout = () => {
             <Route element={<Demo />} path="/demo" />
             <Route element={<Login />} path="/login" />
             <Route element={<MyAccount />} path="/myAccount" />
-            <Route element={<Dashboard />} path="/dashboardVendor" />
+            <Route element={<CreateSeller />} path="/create-seller" />
+            <Route element={<Dashboard />} path="/dashboard-seller" />
+            <Route element={<DashboardProduct />} path="/my-products" />
             <Route element={<Home />} path="/" />
             <Route element={<Register />} path="/register" />
             <Route element={<Single />} path="/single/:theid" />

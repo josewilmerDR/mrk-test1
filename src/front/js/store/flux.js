@@ -1,6 +1,7 @@
 // import { favoritosStore, favoritosActions } from "./favoritos.js";
 //1) importamos los estados y acciones centralizadas del usuario desde userStore.
 import { userStore, userActions } from "./userStore";
+import { sellerStore, sellerActions } from "./sellerStore";
 
 const getState = ({ getStore, getActions, setStore }) => {
   return {
@@ -20,6 +21,7 @@ const getState = ({ getStore, getActions, setStore }) => {
       ],
       // ...favoritosStore,
       ...userStore,
+      ...sellerStore,
     },
     actions: {
       // Use getActions to call a function within a fuction
@@ -84,6 +86,7 @@ const getState = ({ getStore, getActions, setStore }) => {
         return response;
       },
       ...userActions(getStore, getActions, setStore),
+      ...sellerActions(getStore, getActions, setStore),
     },
   };
 };

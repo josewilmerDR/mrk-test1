@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 05693dd6ed77
+Revision ID: 67911f777ca9
 Revises: 
-Create Date: 2023-06-09 09:40:09.646528
+Create Date: 2023-06-10 14:05:24.202917
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '05693dd6ed77'
+revision = '67911f777ca9'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -142,15 +142,21 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=120), nullable=False),
     sa.Column('description', sa.String(length=120), nullable=False),
-    sa.Column('image', sa.String(length=120), nullable=False),
+    sa.Column('bar_code', sa.String(length=120), nullable=True),
+    sa.Column('image', sa.String(length=120), nullable=True),
     sa.Column('price', sa.String(length=120), nullable=False),
-    sa.Column('stock', sa.String(length=120), nullable=False),
-    sa.Column('rating', sa.String(length=120), nullable=False),
+    sa.Column('stock', sa.String(length=120), nullable=True),
+    sa.Column('rating', sa.String(length=120), nullable=True),
     sa.Column('date_listed', sa.Date(), nullable=False),
+    sa.Column('tax', sa.Float(), nullable=True),
+    sa.Column('special_tax', sa.Float(), nullable=True),
+    sa.Column('offer_price', sa.Float(), nullable=True),
     sa.Column('category_id', sa.Integer(), nullable=True),
     sa.Column('seller_id', sa.Integer(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['category_id'], ['category.id'], ),
     sa.ForeignKeyConstraint(['seller_id'], ['seller.id'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('review_seller',

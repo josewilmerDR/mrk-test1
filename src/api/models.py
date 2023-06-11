@@ -26,6 +26,7 @@ class User(db.Model):
         "MarkettTransaction", backref="user", lazy=True
     )
     wishlists = db.relationship("Wishlist", backref="user", lazy=True)
+    product = db.relationship("Product", backref="user", lazy=True)
 
     def __repr__(self):
         return f"<User {self.email}>"
@@ -38,6 +39,7 @@ class User(db.Model):
             "email": self.email,
             "profile_image": self.profile_image,
             "country_id": self.country_id,
+            "is_seller": self.is_seller,
             # do not serialize the password, its a security breach
         }
 
@@ -89,21 +91,22 @@ class Seller(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "seller_name": self.seller_name,
-            "seller_description": self.seller_description,
-            "seller_image": self.seller_image,
-            "seller_address": self.seller_address,
-            "seller_phone": self.seller_phone,
-            "seller_email": self.seller_email,
-            "seller_website": self.seller_website,
-            "seller_facebook": self.seller_facebook,
-            "seller_instagram": self.seller_instagram,
-            "seller_twitter": self.seller_twitter,
-            "seller_whatsapp": self.seller_whatsapp,
-            "seller_linkedin": self.seller_linkedin,
-            "seller_pinterest": self.seller_pinterest,
-            "seller_rating": self.seller_rating,
+            "name": self.name,
+            "description": self.description,
+            "image": self.image,
+            "address": self.address,
+            "phone": self.phone,
+            "email": self.email,
+            "website": self.website,
+            "facebook": self.facebook,
+            "instagram": self.instagram,
+            "twitter": self.twitter,
+            "whatsapp": self.whatsapp,
+            "linkedin": self.linkedin,
+            "pinterest": self.pinterest,
+            "rating": self.rating,
             "tax_id": self.tax_id,
+            # "country_id": self.country_id,
             "user_id": self.user_id,
         }
 

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
 
 import { styled, alpha } from "@mui/material/styles";
@@ -80,7 +80,7 @@ function Navbar() {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [menuAnchorEl, setMenuAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
-
+  const [infoUsuario, setInfoUsuario] = React.useState(null);
   const isMenuOpen = Boolean(anchorEl);
   const isMenuOpenOne = Boolean(menuAnchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -102,25 +102,25 @@ function Navbar() {
   }
   const goToMyProfile = () => {
     navigate("/myProfile")
+    handleMenuClose();
   }
-  const goToMyAccountVendor = () => {
-    navigate("/dashboardVendor")
+  const goToMyAccountSeller = () => {
+    navigate("/dashboard-seller")
+    handleMenuClose();
   }
-
-
+  const goToCreateSeller = () => {
+    navigate("/create-seller")
+    handleMenuClose();
+  }
   const handleMenuCloseOne = () => {
     setMenuAnchorEl(null);
   };
-
-
   const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
-
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
-
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
@@ -129,6 +129,20 @@ function Navbar() {
   const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
+
+  useEffect(() => {
+    const getCurrentUser = async () => {
+      const { respuestaJson, response } = await actions.useFetch("/api/current-user");
+
+      console.log(response.ok)
+      console.log(respuestaJson)
+      if (response.ok) {
+        setInfoUsuario(respuestaJson.is_seller)
+        console.log(respuestaJson.is_seller)
+      }
+    }
+    getCurrentUser();
+  }, [])
 
   const menuId = "primary-search-account-menu";
   const renderMenu = (
@@ -149,7 +163,7 @@ function Navbar() {
     >
       <MenuItem onClick={goToMyProfile}>Perfll</MenuItem>
       <MenuItem onClick={goToMyAccount}>Mi cuenta</MenuItem>
-      <MenuItem onClick={goToMyAccountVendor}>Cuenta de vendedor</MenuItem>
+      {infoUsuario ? <MenuItem onClick={goToMyAccountSeller}>Cuenta de vendedor</MenuItem> : <Button onClick={goToCreateSeller}>Crear mi cuenta de vendedor</Button>}
     </Menu>
   );
 

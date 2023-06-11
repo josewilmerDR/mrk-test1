@@ -11,6 +11,7 @@ from api.models import db
 
 # from api.routes import api
 from api.routesUser import api
+from api.routesProduct import routes_product
 
 from api.admin import setup_admin
 from api.commands import setup_commands
@@ -60,6 +61,7 @@ setup_commands(app)
 # Add all endpoints form the API with a "api" preseller
 app.register_blueprint(api, url_prefix="/api")
 app.register_blueprint(routes_seller, url_prefix="/routes_seller")
+app.register_blueprint(routes_product, url_prefix="/routes_product")
 
 
 # Handle/serialize errors like a JSON object

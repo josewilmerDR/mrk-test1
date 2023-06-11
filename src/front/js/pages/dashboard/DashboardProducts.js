@@ -1,4 +1,6 @@
 import * as React from "react";
+import { useEffect, useState, useContext } from "react";
+import { Context } from "../../store/appContext";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import MuiDrawer from "@mui/material/Drawer";
@@ -10,11 +12,7 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
-import Paper from "@mui/material/Paper";
 import { SecondaryListItems, MainListItems } from "./listItems";
-import Chart from "./Chart";
-import Deposits from "./Deposits";
-import Orders from "./Orders";
 import MenuIcon from "@mui/icons-material/Menu";
 
 const drawerWidth = 240;
@@ -48,11 +46,27 @@ const Drawer = styled(MuiDrawer, {
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
-export default function Dashboard() {
+export default function DashboardProduct() {
   const [open, setOpen] = React.useState(false);
+  const { store, actions } = useContext(Context);
+  const [allProducts, setAllProducts] = useState([]);
   const toggleDrawer = () => {
     setOpen(!open);
   };
+
+  useEffect(() => {
+    const getAllProductsCurrentUser = async () => {
+      const { respuestaJson, response } = await actions.useFetch(
+        "/routes_product/all-products"
+      );
+
+      console.log(response.ok);
+      if (response.ok) {
+        setAllProducts(respuestaJson);
+      }
+    };
+    getAllProductsCurrentUser();
+  }, []);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -99,38 +113,11 @@ export default function Dashboard() {
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
-              {/* Chart */}
-              <Grid item xs={12} md={8} lg={9}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 240,
-                  }}
-                >
-                  <Chart />
-                </Paper>
-              </Grid>
-              {/* Recent Deposits */}
-              <Grid item xs={12} md={4} lg={3}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 240,
-                  }}
-                >
-                  <Deposits />
-                </Paper>
-              </Grid>
-              {/* Recent Orders */}
-              <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: "flex", flexDirection: "column" }}>
-                  <Orders />
-                </Paper>
-              </Grid>
+              {allProducts.length > 0 ? (
+                allProducts.map((product) => <Product product={product} />)
+              ) : (
+                <p>No products found.</p>
+              )}
             </Grid>
           </Container>
         </Box>

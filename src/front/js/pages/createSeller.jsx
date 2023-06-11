@@ -12,12 +12,14 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { useTheme } from '@mui/material/styles';
 
-export const Register = () => {
+export const CreateSeller = () => {
   const { store, actions } = useContext(Context);
-  const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
+  const [taxId, setTaxId] = useState("")
+  const [description, setDescription] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("")
 
   const navigate = useNavigate();
 
@@ -26,6 +28,7 @@ export const Register = () => {
   const classes = {
     container: {
       padding: theme.spacing(2),
+      color: "black"
     },
     lockIcon: {
       margin: theme.spacing(1),
@@ -38,10 +41,10 @@ export const Register = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Email:", email, "Password:", password, "Name:");
-    // Lógica de inicio de sesión
-    actions.register(name, lastName, email, password);
-    navigate("/login");
+    console.log("Name:", name, "Email:", email);
+    // Lógica de creación de vendedor
+    actions.createSeller(name, email, taxId, description, phone, address);
+    navigate("/dashboard-seller");
     // console.log({
     //   email: data.get("email"),
     //   password: data.get("password"),
@@ -52,12 +55,12 @@ export const Register = () => {
     <div className="container-fluid">
       <Container component="main" maxWidth="xs">
         <form onSubmit={handleSubmit} className={classes.container} >
-          <Typography className="text-black" variant="h5" align="center">
-            Registrate!
+          <Typography variant="h5" align="center" sx={{ color: "black" }}>
+            Crear comercio
           </Typography>
 
           <TextField
-            label="Nombres"
+            label="Nombre de comercio"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
@@ -65,26 +68,11 @@ export const Register = () => {
             required
             fullWidth
             InputProps={{
-              placeholder: "Nombres",
+              placeholder: "Nombre de comercio",
               style: { color: "black" },
               className: "text-outline",
             }}
           />
-
-          <TextField
-            label="Apellidos"
-            type="text"
-            value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
-            margin="normal"
-            required
-            fullWidth
-            InputProps={{
-              placeholder: "Apellidos",
-              style: { color: "black" },
-            }}
-          />
-
           <TextField
             label="Correo electrónico"
             type="email"
@@ -99,22 +87,61 @@ export const Register = () => {
               className: "text-outline",
             }}
           />
-
           <TextField
-            label="Contraseña"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            label="Identificación tributaria"
+            type="text"
+            value={taxId}
+            onChange={(e) => setTaxId(e.target.value)}
             margin="normal"
             required
             fullWidth
             InputProps={{
-              placeholder: "Contraseña",
-              style: { color: "Black" },
-              className: "text-outline",
+              placeholder: "Identificación tributaria",
+              style: { color: "black" },
             }}
           />
 
+          <TextField
+            label="Descripción"
+            type="text"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            margin="normal"
+            required
+            fullWidth
+            InputProps={{
+              placeholder: "Ej. Tienda de productos de mascotas",
+              style: { color: "black" },
+            }}
+          />
+
+          <TextField
+            label="Teléfono"
+            type="phone"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            margin="normal"
+            required
+            fullWidth
+            InputProps={{
+              placeholder: "Ej. 88888888",
+              style: { color: "black" },
+            }}
+          />
+
+          <TextField
+            label="Dirección"
+            type="text"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            margin="normal"
+            required
+            fullWidth
+            InputProps={{
+              placeholder: "Ej: 100 metros Norte de Estación de combustible, Romosher, SJ, CR",
+              style: { color: "black" },
+            }}
+          />
 
           <Button
             type="button"
@@ -126,7 +153,7 @@ export const Register = () => {
               handleSubmit(e);
             }}
           >
-            Registrase
+            Crear
           </Button>
         </form>
       </Container>
@@ -135,4 +162,4 @@ export const Register = () => {
 };
 
 
-export default Register;  
+export default CreateSeller;  

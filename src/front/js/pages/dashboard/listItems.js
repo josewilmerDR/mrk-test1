@@ -9,64 +9,90 @@ import PeopleIcon from "@mui/icons-material/People";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import LayersIcon from "@mui/icons-material/Layers";
 import AssignmentIcon from "@mui/icons-material/Assignment";
+import LocalMallIcon from "@mui/icons-material/LocalMall";
 
-export const mainListItems = (
-  <React.Fragment>
-    <ListItemButton>
-      <ListItemIcon>
-        <DashboardIcon />
-      </ListItemIcon>
-      <ListItemText primary="Dashboard" />
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <ShoppingCartIcon />
-      </ListItemIcon>
-      <ListItemText primary="Orders" />
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <PeopleIcon />
-      </ListItemIcon>
-      <ListItemText primary="Customers" />
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <BarChartIcon />
-      </ListItemIcon>
-      <ListItemText primary="Reports" />
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <LayersIcon />
-      </ListItemIcon>
-      <ListItemText primary="Integrations" />
-    </ListItemButton>
-  </React.Fragment>
-);
+import { useNavigate } from "react-router-dom";
 
-export const secondaryListItems = (
-  <React.Fragment>
-    <ListSubheader component="div" inset>
-      Saved reports
-    </ListSubheader>
-    <ListItemButton>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <ListItemText primary="Current month" />
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <ListItemText primary="Last quarter" />
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <AssignmentIcon />
-      </ListItemIcon>
-      <ListItemText primary="Year-end sale" />
-    </ListItemButton>
-  </React.Fragment>
-);
+export function MainListItems() {
+  const navigate = useNavigate();
+  const goToMyProducts = () => {
+    navigate("/my-products");
+  };
+  const goToDashboard = () => {
+    navigate("/dashboard-seller");
+  };
+  return (
+    <>
+      <React.Fragment>
+        <ListItemButton onClick={goToDashboard}>
+          <ListItemIcon>
+            <DashboardIcon />
+          </ListItemIcon>
+          <ListItemText primary="Dashboard" />
+        </ListItemButton>
+        <ListItemButton>
+          <ListItemIcon>
+            <ShoppingCartIcon />
+          </ListItemIcon>
+          <ListItemText primary="Orders" />
+        </ListItemButton>
+        <ListItemButton>
+          <ListItemIcon>
+            <PeopleIcon />
+          </ListItemIcon>
+          <ListItemText primary="Customers" />
+        </ListItemButton>
+        <ListItemButton>
+          <ListItemIcon>
+            <BarChartIcon />
+          </ListItemIcon>
+          <ListItemText primary="Reports" />
+        </ListItemButton>
+        <ListItemButton>
+          <ListItemIcon>
+            <LayersIcon />
+          </ListItemIcon>
+          <ListItemText primary="Integrations" />
+        </ListItemButton>
+        <ListItemButton onClick={goToMyProducts}>
+          <ListItemIcon>
+            <LocalMallIcon />
+          </ListItemIcon>
+          <ListItemText primary="Mis productos" />
+        </ListItemButton>
+      </React.Fragment>
+      ;
+    </>
+  );
+}
+
+export function SecondaryListItems() {
+  return (
+    <>
+      <React.Fragment>
+        <ListSubheader component="div" inset>
+          Saved reports
+        </ListSubheader>
+        <ListItemButton>
+          <ListItemIcon>
+            <AssignmentIcon />
+          </ListItemIcon>
+          <ListItemText primary="Current month" />
+        </ListItemButton>
+        <ListItemButton>
+          <ListItemIcon>
+            <AssignmentIcon />
+          </ListItemIcon>
+          <ListItemText primary="Last quarter" />
+        </ListItemButton>
+        <ListItemButton>
+          <ListItemIcon>
+            <AssignmentIcon />
+          </ListItemIcon>
+          <ListItemText primary="Year-end sale" />
+        </ListItemButton>
+      </React.Fragment>
+      ;
+    </>
+  );
+}

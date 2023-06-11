@@ -246,14 +246,9 @@ def get_all_seller():
     return jsonify(user), 200
 
 
-# 1 - REGISTRO DE USUARIO.
-# VER DOCUMENTACION ADICIONAL SOBRE ESTA RUTA EN: https://www.notion.so/dicttaapp-1-REGISTRO-DE-USUARIO-7ed225b8b61a4461a68413a37253434c
-s = URLSafeTimedSerializer("any key works")
-
-
-@routes_seller.route("/register-seller", methods=["POST"])
+@routes_seller.route("/create-seller", methods=["POST"])
 @jwt_required()
-def register_seller():
+def create_seller():
     # Obtenemos el ID del usuario del token
     jwt_claims = get_jwt()
     user_id = jwt_claims["user_id"]
@@ -327,7 +322,7 @@ def register_seller():
     db.session.commit()
 
     # Devolvemos una respuesta JSON con un mensaje y un código de estado HTTP 201 (creado)
-    return jsonify({"message": "Usuario creado correctamente"}), 201
+    return jsonify({"message": "Cuenta de vendedor creado correctamente"}), 201
 
 
 # # 2 - LOGIN DE USUARIO.
