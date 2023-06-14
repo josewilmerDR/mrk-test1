@@ -16,6 +16,7 @@ import MyAccount from "./pages/myAccount.jsx";
 import Dashboard from "./pages/dashboard/Dashboard";
 import CreateSeller from "./pages/createSeller.jsx";
 import DashboardProduct from "./pages/dashboard/DashboardProducts";
+import QRReader from "./component/qrReader.jsx";
 //create your first component
 const Layout = () => {
   //the basename is used when your project is published in a subdirectory and not in the root of the domain
@@ -38,6 +39,7 @@ const Layout = () => {
             <Route element={<Home />} path="/" />
             <Route element={<Register />} path="/register" />
             <Route element={<Single />} path="/single/:theid" />
+            <Route element={<QRReader />} path="/qr-reader" />
             <Route element={<h1>Not found!</h1>} />
           </Routes>
           <Footer />

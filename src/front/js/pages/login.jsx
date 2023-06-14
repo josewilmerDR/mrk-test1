@@ -1,6 +1,9 @@
 import React, { useContext } from "react";
 import "../../styles/login.css";
 
+import ReactDOM from 'react-dom';
+import GoogleLogin from 'react-google-login';
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
@@ -21,6 +24,10 @@ export const Login = () => {
   const navigate = useNavigate();
 
   const theme = useTheme();
+
+  const responseGoogle = (response) => {
+    console.log(response);
+  }
 
   const classes = {
     container: {
@@ -125,6 +132,14 @@ export const Login = () => {
             </Grid>
           </Grid>
         </form>
+        <GoogleLogin
+          clientId="658977310896-knrl3gka66fldh83dao2rhgbblmd4un9.apps.googleusercontent.com"
+          buttonText="Ingresa con ti cuenta de Google"
+          onSuccess={responseGoogle}
+          onFailure={responseGoogle}
+          cookiePolicy={'single_host_origin'}
+        />
+        {/* document.getElementById('googleButton') */}
       </Container>
     </div>
   );
