@@ -61,6 +61,7 @@ export default function DashboardProduct() {
       );
 
       console.log(response.ok);
+      console.log(respuestaJson);
       if (response.ok) {
         setAllProducts(respuestaJson);
       }
@@ -113,8 +114,28 @@ export default function DashboardProduct() {
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
-              {allProducts.length > 0 ? (
-                allProducts.map((product) => <Product product={product} />)
+              {allProducts && allProducts.length > 0 ? (
+                allProducts.map((product, index) => (
+                  <div key={index} style={{ width: "100%" }}>
+                    <Grid item xs={12} md={4} sx={{ width: "100%" }}>
+                      <div className="card">
+                        <img
+                          src={product.image}
+                          className="card-img-top"
+                          alt="..."
+                        />
+                        <div className="card-body">
+                          <h5 className="card-title">{product.name}</h5>
+                          <p className="card-text">{product.description}</p>
+                          <p className="card-text">{product.price}</p>
+                          <p className="card-text">{product.stock}</p>
+                          <p className="card-text">{product.category}</p>
+                          <p className="card-text">{product.brand}</p>
+                        </div>
+                      </div>
+                    </Grid>
+                  </div>
+                ))
               ) : (
                 <p>No products found.</p>
               )}

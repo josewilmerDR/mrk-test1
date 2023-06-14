@@ -6,12 +6,10 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import Badge from "@mui/material/Badge";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import MailIcon from "@mui/icons-material/Mail";
@@ -19,10 +17,8 @@ import NotificationsIcon from "@mui/icons-material/Notifications";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Button from '@mui/material/Button';
-import { Link } from "@mui/material/";
 import { useNavigate } from "react-router-dom";
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import SvgIcon from '@mui/material/SvgIcon';
 
 
 const theme = createTheme({
@@ -248,28 +244,36 @@ function Navbar() {
       <AppBar position="static" color="secondary" sx={{ display: "flex", justifyContent: "space-between" }}>
         <Toolbar>
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-            <img
-              src={"https://res.cloudinary.com/doqx408xv/image/upload/v1685410781/publicidad_fb_02_v4_wlxsbm.png"}
-              alt="Logo"
-              style={{
-                height: "auto",
-                width: "200px",
-                marginRight: "0.5rem",
-              }}
-            />
+            <IconButton
+              onClick={() => navigate("/")}
+            >
+              <img
+                src={"https://res.cloudinary.com/doqx408xv/image/upload/v1685410781/publicidad_fb_02_v4_wlxsbm.png"}
+                alt="Logo"
+                style={{
+                  height: "auto",
+                  width: "200px",
+                  marginRight: "0.5rem",
+                }}
+              />
+            </IconButton>
           </Box>
 
           <Box sx={{ display: { xs: 'block', sm: 'none' } }}>
-            <img
-              src={"https://res.cloudinary.com/doqx408xv/image/upload/v1685410785/markettika_05_V2_w9oqlk.png"}
-              alt="Logo"
-              style={{
-                height: "2.5rem",
-                width: "60px",
-                marginRight: "0.5rem",
+            <IconButton
+              onClick={() => navigate("/")}
+            >
+              <img
+                src={"https://res.cloudinary.com/doqx408xv/image/upload/v1685410785/markettika_05_V2_w9oqlk.png"}
+                alt="Logo"
+                style={{
+                  height: "2.5rem",
+                  width: "60px",
+                  marginRight: "0.5rem",
 
-              }}
-            />
+                }}
+              />
+            </IconButton>
           </Box>
           <Search sx={{ minWidth: "225px", height: "35px", flex: { md: "1 1 75%" } }}>
             <SearchIconWrapper>
