@@ -1,4 +1,36 @@
-# WebApp boilerplate with React JS and Flask API
+# MARKETTIKA:
+Resumen: Una red que permitiría a los individuos acceder a propiedad con valor respaldado en activos reales y fácilmente transferible entre individuos.
+Problema que se intenta solucionar: El acceso a la propiedad.
+
+### Introducción: 
+El curso natural muestra que dentro de 1 o 2 décadas, casi todas las actividades serán mecanizadas y, sobre todo, mucho más eficientes. Predios agrícolas donde apenas habrá intervención humana, carros con conducción autónoma, sistemas que te indicarán en tiempo real sobre tu estado de salud, y así un largo etcétera.
+Sin embargo, para que esto sea posible de una forma segura y beneficiosa para todos, antes necesitamos trabajar en temas igualmente importantes; y uno de ellos es el acceso a la propiedad, algo inherente a la persona humana y algo a lo que cada vez es más difícil de acceder.
+### Descripción del proyecto.
+1)	Características principales: 
+a)	Objetivo: El objetivo único es ofrecer al mayor número de personas la posibilidad de acceder de manera fácil, segura y gratuita a propiedad respaldada en activos reales y fácilmente transferible entre personas. 
+b)	Descentralización gradual: Se tomarán las medidas necesarias para que gradualmente el poder de decisión vaya tomando una forma aplanada, con células/nodos con libertad de actuación. De la misma forma, parte o la totalidad del código podrá ser opensource.
+2)	Medios y/o formas propuestas para llevar a cabo el objetivo:
+a)	Creación de un Marketplace: Casi sin excepción, las personas rutinariamente realizan compras, ya sea para suplir necesidades básicas o porque pueden permitirse comodidades. Pero lo cierto es que un Marketplace viene a ser un medio para catalizar ese hecho a favor de nuestro objetivo.
+b)	Acciones: El proyecto se dividirá en 510.072.000 acciones, cuyo ticket será MRK (markets), cada uno con un valor inicial de 0.00001550 USD (0.01 CRC), y donde el mismo está respaldado por la inversión inicial para empezar el proyecto tanto en infraestructura como en trabajo, y donde se tiene la intención de que el valor de cada market se actualice de acuerdo al valor del Patrimonio Neto del proyecto.
+c)	Asignación de acciones:  Esta se realizará mediante la compra en los puntos de venta Markettika (digital o físico) con dinero fiduciario y/o cualquier moneda distinta de markets, así como en la red de comercios asociados, y para todos los casos, se devolverá en markets, el 1% del total de la compra.
+3)	Problemas a resolver:
+a)	Escalabilidad: 
+4)	Generalidades:
+a)	El hecho de asignar acciones, exclusivamente vía el 1% de las compras, es una forma de asegurar que la distribución de las mismas sea lo más descentralizada posible y a lo largo de un tiempo lo suficientemente amplio como para dar la oportunidad al mayor número de personas posibles.
+b)	Ningún individuo puede acumular más del 1% de las acciones, o sea 5100720
+c)	No existirá comisión por la transferencia de markets de usuario a usuarios.
+5)	Puesta en marcha: 
+Inicialmente, MARKETTIKA, se implementará vía markettika.com, un Marketplace donde los usuarios puedan comprar y/u ofertar sus productos. En una segunda etapa, se crearán pequeños módulos físicos unipersonales que funcionarán autónomamente, de tal forma, que, sin la necesidad de un dependiente, los clientes podrán realizar sus compras.
+6) Viabilidad y sostenibilidad:
+a) La viabilidad y sostenibilidad de MARKETTIKA depende de varios factores, como la adopción de la red por parte de los usuarios, el éxito en la implementación de la estrategia de marketing y crecimiento, la escalabilidad de la plataforma, entre otros.
+b) En cuanto a la rentabilidad, se espera que la valoración de las acciones aumente con el tiempo, a medida que el patrimonio neto del proyecto crezca. Además, se generará ingresos a través de las comisiones cobradas en las conversiones de markets a fiat, comisión por compra en la plataforma, y otros no mencionadas aquí.
+7) Conclusiones:
+En general, MARKETTIKA es un proyecto ambicioso que busca solucionar un problema importante, el acceso a la propiedad, a través de una plataforma descentralizada y respaldada por activos reales. Si se logra implementar adecuadamente, podría tener un impacto significativo en la forma en que las personas acceden a la propiedad en el futuro.
+
+
+
+# ABOUT THIS APPLICATION: 
+### WebApp boilerplate with React JS and Flask API
 
 Build web applications using React.js for the front end and python/flask for your backend API.
 
