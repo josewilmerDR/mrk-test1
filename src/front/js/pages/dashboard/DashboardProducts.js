@@ -14,9 +14,27 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import { SecondaryListItems, MainListItems } from "./listItems";
 import MenuIcon from "@mui/icons-material/Menu";
-
+import { Fab } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import { Link } from "react-router-dom";
 const drawerWidth = 240;
 
+//Se estiliza el componennte Fab de Material UI
+const PlusButton = styled(Fab)(({ theme }) => ({
+  position: "fixed",
+  bottom: "50%",
+  right: "49%",
+  zIndex: 2,
+}));
+
+const PlusButtonWithHistoric = styled(Fab)(({ theme }) => ({
+  position: "fixed",
+  bottom: "3%",
+  right: "3%",
+  zIndex: 2,
+}));
+
+//Se estiliza el componente MuiDrawer de Material UI
 const Drawer = styled(MuiDrawer, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
@@ -50,18 +68,20 @@ export default function DashboardProduct() {
   const [open, setOpen] = React.useState(false);
   const { store, actions } = useContext(Context);
   const [allProducts, setAllProducts] = useState([]);
+  const [infoUsuario, setInfoUsuario] = useState(null);
+
+  //Esta función, hace que al ser llamada, "open" cambie al opuesto del valor actual (Si está en true, pasa a false y viceversa)
   const toggleDrawer = () => {
     setOpen(!open);
   };
 
+  //Funcion para traer todos los productos del usuario actual.
   useEffect(() => {
     const getAllProductsCurrentUser = async () => {
       const { respuestaJson, response } = await actions.useFetch(
         "/routes_product/all-products"
       );
 
-      console.log(response.ok);
-      console.log(respuestaJson);
       if (response.ok) {
         setAllProducts(respuestaJson);
       }
@@ -69,9 +89,52 @@ export default function DashboardProduct() {
     getAllProductsCurrentUser();
   }, []);
 
+  //Funcion para traer la información del usuario actual.
+  useEffect(() => {
+    const cargaDatos = async () => {
+      // let { respuestaJson, response } = await actions.useFetch("/api/protected")
+      const { respuestaJson, response } = await actions.useFetch(
+        "/api/myaccount"
+      );
+
+      if (response.ok) {
+        setInfoUsuario(respuestaJson.name);
+      }
+    };
+    cargaDatos();
+  }, []);
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: "flex" }}>
+        <div className="recetas-container-upper">
+          {allProducts && allProducts.length > 0 ? (
+            <div className="container-add-recipe-manual-history-upper">
+              {/* <Link
+                className="link-to-myaccount"
+                onClick={() => handleLinkClick("/allMyRecipes")}
+              >
+                <h5>Todas mis recetas</h5>
+              </Link> */}
+              <div>
+                <PlusButtonWithHistoric
+                  color="primary"
+                  aria-label="add"
+                  // onClick={handleOpenModal}
+                >
+                  <AddIcon />
+                </PlusButtonWithHistoric>
+                {/* <EditRecipeManualModal
+                  open={isModalOpen}
+                  onClose={handleCloseModal}
+                  onSave={handleSave}
+                /> */}
+              </div>
+            </div>
+          ) : (
+            <></>
+          )}
+        </div>
         <CssBaseline />
         <Drawer
           variant="permanent"
@@ -137,7 +200,49 @@ export default function DashboardProduct() {
                   </div>
                 ))
               ) : (
-                <p>No products found.</p>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    border: "1px solid red",
+                    width: "100%",
+                    height: "auto",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      border: "1px solid red",
+                      width: "100%",
+                      height: "auto",
+                    }}
+                  >
+                    <p>
+                      Hola,{" "}
+                      <strong className="user-chat">{infoUsuario}.</strong>
+                    </p>
+                    <p>Al parecer no haz creado ningún producto aún.</p>
+                    <p>Para empezar. ¿Que tal si agregas uno?</p>
+                  </div>
+                  <PlusButton
+                    color="primary"
+                    aria-label="add"
+                    // onClick={handleOpenModal}
+                  >
+                    <AddIcon />
+                  </PlusButton>
+
+                  {/* <EditRecipeManualModal
+                    open={isModalOpen}
+                    onClose={handleCloseModal}
+                    onSave={handleSave}
+                  /> */}
+                </div>
               )}
             </Grid>
           </Container>
