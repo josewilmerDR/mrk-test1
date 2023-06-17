@@ -17,6 +17,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { Fab } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { Link } from "react-router-dom";
+import AddProductModal from "../../component/addProductModal.jsx";
 const drawerWidth = 240;
 
 //Se estiliza el componennte Fab de Material UI
@@ -69,10 +70,33 @@ export default function DashboardProduct() {
   const { store, actions } = useContext(Context);
   const [allProducts, setAllProducts] = useState([]);
   const [infoUsuario, setInfoUsuario] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   //Esta función, hace que al ser llamada, "open" cambie al opuesto del valor actual (Si está en true, pasa a false y viceversa)
   const toggleDrawer = () => {
     setOpen(!open);
+  };
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const refreshComponent = () => {
+    setRefresh(refresh + 1);
+  };
+
+  const handleSave = () => {
+    // Aquí puedes actualizar el estado de la receta si es necesario
+    setIsModalOpen(false); // cerrar la modal después de guardar
+    // Cambia el valor de 'refresh' para forzar una actualización de las recetas en la seccion "Mis Recetas"
+    // setRefresh(prevRefresh => !prevRefresh);
+    setAllProducts();
+    refreshComponent(); // Refresca el componente para mostrar los cambios
   };
 
   //Funcion para traer todos los productos del usuario actual.
@@ -87,7 +111,7 @@ export default function DashboardProduct() {
       }
     };
     getAllProductsCurrentUser();
-  }, []);
+  }, [refresh]);
 
   //Funcion para traer la información del usuario actual.
   useEffect(() => {
@@ -120,15 +144,15 @@ export default function DashboardProduct() {
                 <PlusButtonWithHistoric
                   color="primary"
                   aria-label="add"
-                  // onClick={handleOpenModal}
+                  onClick={handleOpenModal}
                 >
                   <AddIcon />
                 </PlusButtonWithHistoric>
-                {/* <EditRecipeManualModal
+                <AddProductModal
                   open={isModalOpen}
                   onClose={handleCloseModal}
                   onSave={handleSave}
-                /> */}
+                />
               </div>
             </div>
           ) : (
@@ -232,16 +256,16 @@ export default function DashboardProduct() {
                   <PlusButton
                     color="primary"
                     aria-label="add"
-                    // onClick={handleOpenModal}
+                    onClick={handleOpenModal}
                   >
                     <AddIcon />
                   </PlusButton>
 
-                  {/* <EditRecipeManualModal
+                  <AddProductModal
                     open={isModalOpen}
                     onClose={handleCloseModal}
                     onSave={handleSave}
-                  /> */}
+                  />
                 </div>
               )}
             </Grid>
