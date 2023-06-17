@@ -28,8 +28,6 @@ const AddProductModal = ({ open, onClose, onSave }) => {
   const [offer_active, setOffer_active] = useState(false);
   const [seller_id, setSeller_id] = useState('');
 
-  const [recipeImage, setRecipeImage] = useState(null);
-
   const [id, setId] = useState('');
 
   const [refresh, setRefresh] = useState(false);
@@ -63,6 +61,9 @@ const AddProductModal = ({ open, onClose, onSave }) => {
     body.append('special_tax', specialTax);
     body.append('category_id', category_id);
     body.append('offer_price', offer_price);
+    body.append('offer_start_date', offer_start_date);
+    body.append('offer_end_date', offer_end_date);
+    body.append('offer_active', offer_active);
     body.append('seller_id', seller_id);
 
     const options = {
@@ -128,9 +129,10 @@ const AddProductModal = ({ open, onClose, onSave }) => {
     setDescription('');
     setBarCode('')
     setCategory_id('')
-    setRecipeImage(null);
+    setImage(null);
   };
 
+  // Función para manejar el preview de la imagen
   const handleImageChange = (e) => {
     if (e.target.files.length > 0) {
       // Guarda el archivo de imagen en sí, no su URL
@@ -158,7 +160,6 @@ const AddProductModal = ({ open, onClose, onSave }) => {
           label="Nombre del producto"
           type="text"
           fullWidth
-          // // value={editedQuery}
           onChange={event => setName(event.target.value)}
         />
         <TextField
@@ -169,7 +170,6 @@ const AddProductModal = ({ open, onClose, onSave }) => {
           fullWidth
           multiline
           minRows={4}
-          // value={editedRecipe}
           onChange={event => setDescription(event.target.value)}
         />
 
@@ -179,7 +179,6 @@ const AddProductModal = ({ open, onClose, onSave }) => {
           label="Codigo de barra"
           type="text"
           fullWidth
-          // value={editedQuery}
           onChange={event => setBarCode(event.target.value)}
         />
 
@@ -189,7 +188,6 @@ const AddProductModal = ({ open, onClose, onSave }) => {
           label="Codigo de barra"
           type="text"
           fullWidth
-          // value={editedQuery}
           onChange={event => setBarCode(event.target.value)}
         />
         <TextField
@@ -198,7 +196,6 @@ const AddProductModal = ({ open, onClose, onSave }) => {
           label="Precio"
           type="text"
           fullWidth
-          // value={editedQuery}
           onChange={event => setPrice(event.target.value)}
         />
         <TextField
@@ -207,7 +204,6 @@ const AddProductModal = ({ open, onClose, onSave }) => {
           label="Stock"
           type="text"
           fullWidth
-          // value={editedQuery}
           onChange={event => setStock(event.target.value)}
         />
         <TextField
@@ -216,7 +212,6 @@ const AddProductModal = ({ open, onClose, onSave }) => {
           label="Impuesto"
           type="float"
           fullWidth
-          // value={editedQuery}
           onChange={event => setTax(event.target.value)}
         />
         <TextField
@@ -225,7 +220,6 @@ const AddProductModal = ({ open, onClose, onSave }) => {
           label="Impuesto especial"
           type="float"
           fullWidth
-          // value={editedQuery}
           onChange={event => setSpecialTax(event.target.value)}
         />
         <TextField
@@ -234,7 +228,6 @@ const AddProductModal = ({ open, onClose, onSave }) => {
           label="Categoria"
           type="text"
           fullWidth
-          // value={editedQuery}
           onChange={event => setCategory_id(event.target.value)}
         />
 
@@ -246,7 +239,7 @@ const AddProductModal = ({ open, onClose, onSave }) => {
                 onChange={(event) => setOffer_active(event.target.checked)}
               />
             }
-            label="Oferta activa"
+            label="Activar oferta"
           />
           <TextField
             variant='outlined'

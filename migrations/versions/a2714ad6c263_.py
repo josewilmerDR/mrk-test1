@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 67911f777ca9
+Revision ID: a2714ad6c263
 Revises: 
-Create Date: 2023-06-10 14:05:24.202917
+Create Date: 2023-06-16 20:51:34.998209
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '67911f777ca9'
+revision = 'a2714ad6c263'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -151,6 +151,9 @@ def upgrade():
     sa.Column('tax', sa.Float(), nullable=True),
     sa.Column('special_tax', sa.Float(), nullable=True),
     sa.Column('offer_price', sa.Float(), nullable=True),
+    sa.Column('offer_active', sa.Boolean(), nullable=True),
+    sa.Column('offer_start_date', sa.Date(), nullable=True),
+    sa.Column('offer_end_date', sa.Date(), nullable=True),
     sa.Column('category_id', sa.Integer(), nullable=True),
     sa.Column('seller_id', sa.Integer(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),

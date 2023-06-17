@@ -34,8 +34,6 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 
-# RUTAS QUE ENCONTRARÁ EN ESTE ARCHIVO: 1) USER REGISTER, 2) USER LOGIN, 3) USER DELETE, 4) USER UPDATE, 5) USER ACOUNT, 6) USER LOGOUT
-
 # PARA OPERACIONES CON FECHAS Y HORAS.
 from datetime import (
     date,
@@ -52,6 +50,18 @@ from email_validator import validate_email, EmailNotValidError
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended import JWTManager
 
+# Configuración de Cloudinary
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
+
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+    api_proxy="http://proxy.server:9999",
+    secure=True,
+)
 
 routes_product = Blueprint("routes_product", __name__)
 
@@ -218,21 +228,38 @@ def create_seller():
     special_tax = body["special_tax"]
     category_id = body["category_id"]
     offer_price = body["offer_price"]
+    offer_active = body["offer_active"]
+    offer_start_date = body["offer_start_date"]
+    offer_end_date = body["offer_end_date"]
     seller_id = body["seller_id"]
     # country = body["country"]
+
+    # Guardamos la imagen en Cloudinary
+    # Consigue un timestamp y formatea como string
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    image_cloudinary_url = cloudinary.uploader.upload(
+        request.files["image_of_recipe"],
+        public_id=f'{request.form.get("user_query").replace(" ", "_")}_{timestamp}',
+    )[
+        "url"
+    ]  # Extract the 'url' from the returned dictionary
 
     # Creamos un nuevo objeto de seller y lo agregamos a la base de datos
     new_product = Product(
         name=name,
         description=description,
         bar_code=bar_code,
-        image=image,
+        image=image_cloudinary_url,
         price=price,
         stock=stock,
         date_listed=datetime.now(),
         tax=tax,
         special_tax=special_tax,
         offer_price=offer_price,
+        offer_active=offer_active,
+        offer_start_date=offer_start_date,
+        offer_end_date=offer_end_date,
         category_id=category_id,
         seller_id=seller_id,
         user_id=user_id,
@@ -241,7 +268,15 @@ def create_seller():
     db.session.commit()
 
     # Devolvemos una respuesta JSON con un mensaje y un código de estado HTTP 201 (creado)
-    return jsonify({"message": "Producto creado correctamente"}), 201
+    return (
+        jsonify(
+            {
+                "message": "Producto creado correctamente",
+                "image_url": image_cloudinary_url,
+            }
+        ),
+        201,
+    )
 
 
 # # 2 - LOGIN DE USUARIO.

@@ -18,6 +18,10 @@ class Product(db.Model):
     tax = db.Column(db.Float, unique=False, nullable=True)
     special_tax = db.Column(db.Float, unique=False, nullable=True)
     offer_price = db.Column(db.Float, unique=False, nullable=True)
+    offer_active = db.Column(db.Boolean, unique=False, nullable=True)
+    offer_start_date = db.Column(db.Date, unique=False, nullable=True)
+    offer_end_date = db.Column(db.Date, unique=False, nullable=True)
+
     category_id = db.Column(db.Integer, db.ForeignKey("category.id"))
     seller_id = db.Column(db.Integer, db.ForeignKey("seller.id"))
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
