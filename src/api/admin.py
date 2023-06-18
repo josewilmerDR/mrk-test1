@@ -3,7 +3,7 @@ from flask_admin import Admin
 from .db import db
 
 # from .models import
-from .models import User, Country, Seller, ReviewSeller, ReviewProduct
+from .models import User, Country, Seller, ReviewSeller, ReviewProduct, TokenBlokedList
 from .modelsProduct import Product, Category, CategoryProduct, SellerProduct
 from .modelsOrder import (
     Order,
@@ -45,6 +45,7 @@ def setup_admin(app):
     admin.add_view(ModelView(OrderDeliveryAddress, db.session))
     admin.add_view(ModelView(CategoryProduct, db.session))
     admin.add_view(ModelView(SellerProduct, db.session))
+    admin.add_view(ModelView(TokenBlokedList, db.session))
 
     # You can duplicate that line to add mew models
     # admin.add_view(ModelView(YourModelName, db.session))

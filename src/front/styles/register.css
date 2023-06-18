@@ -1,0 +1,6 @@
+.MuiFormLabel-root,
+.MuiInputBase-root .MuiInputBase-input::-webkit-input-placeholder {
+  color: black !important;
+  opacity: 0.8;
+  font-weight: 300;
+}

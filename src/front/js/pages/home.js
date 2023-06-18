@@ -4,6 +4,7 @@ import "../../styles/home.css";
 import Uploader from "../component/uploader/uploader.jsx";
 import PopUp from "../component/popUp.jsx";
 import TopSellers from "../component/topSellers.jsx";
+import TopShoes from "../component/topShoes.jsx";
 
 export const Home = () => {
   const { store, actions } = useContext(Context);
@@ -17,7 +18,7 @@ export const Home = () => {
       </div>
       <div>
         <h3>Más vendido en Zapatos</h3>
-        <TopSellers />
+        <TopShoes />
       </div>
       <div>
         <h3>Ofertas relámpago</h3>

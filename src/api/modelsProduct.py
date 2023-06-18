@@ -9,14 +9,22 @@ class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=False, nullable=False)
     description = db.Column(db.String(120), unique=False, nullable=False)
-    image = db.Column(db.String(120), unique=False, nullable=False)
+    bar_code = db.Column(db.String(120), unique=False, nullable=True)
+    image = db.Column(db.String(120), unique=False, nullable=True)
     price = db.Column(db.String(120), unique=False, nullable=False)
-    stock = db.Column(db.String(120), unique=False, nullable=False)
-    rating = db.Column(db.String(120), unique=False, nullable=False)
+    stock = db.Column(db.String(120), unique=False, nullable=True)
+    rating = db.Column(db.String(120), unique=False, nullable=True)
     date_listed = db.Column(db.Date, unique=False, nullable=False)
+    tax = db.Column(db.Float, unique=False, nullable=True)
+    special_tax = db.Column(db.Float, unique=False, nullable=True)
+    offer_price = db.Column(db.Float, unique=False, nullable=True)
+    offer_active = db.Column(db.Boolean, unique=False, nullable=True)
+    offer_start_date = db.Column(db.Date, unique=False, nullable=True)
+    offer_end_date = db.Column(db.Date, unique=False, nullable=True)
 
     category_id = db.Column(db.Integer, db.ForeignKey("category.id"))
     seller_id = db.Column(db.Integer, db.ForeignKey("seller.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
     seller_product = db.relationship("SellerProduct", backref="product", lazy=True)
     category_product = db.relationship("CategoryProduct", backref="product", lazy=True)
@@ -32,13 +40,18 @@ class Product(db.Model):
             "id": self.id,
             "name": self.name,
             "description": self.description,
+            "bar_code": self.bar_code,
             "image": self.image,
             "price": self.price,
             "stock": self.stock,
             "rating": self.rating,
             "date_listed": self.date_listed,
+            "tax": self.tax,
+            "special_tax": self.special_tax,
+            "offer_price": self.offer_price,
             "category_id": self.category_id,
             "seller_id": self.seller_id,
+            "user_id": self.user_id,
         }
 
 

@@ -1,11 +1,18 @@
 import React, { useState } from 'react';
 import { Modal, Carousel } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
+import { useNavigate } from 'react-router-dom';
 
 function PopUp() {
   const [show, setShow] = useState(true);
 
+  const navigate = useNavigate();
+
   const handleClose = () => setShow(false);
+
+  const goToRegister = () => {
+    navigate("/register");
+  }
 
   return (
     <Modal show={show} onHide={handleClose}>
@@ -72,7 +79,7 @@ function PopUp() {
             <Carousel.Caption style={{ background: "black", opacity: ".75", color: "white" }} >
               <h3 style={{ color: "gold" }} >Algo nuevo y emocionante</h3>
               <p >Markettika es más útil para todos en la medida que más personas se unan. Valora registrarte y ser parte algo nuevo como emocionante.</p>
-              <Button variant="primary" onClick={handleClose}>Registrarme</Button>
+              <Button variant="primary" onClick={goToRegister}>Registrarme</Button>
             </Carousel.Caption>
 
           </Carousel.Item>
