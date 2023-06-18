@@ -275,7 +275,7 @@ function Navbar() {
               />
             </IconButton>
           </Box>
-          <Search sx={{ minWidth: "225px", height: "35px", flex: { md: "1 1 75%" } }}>
+          <Search sx={{ minWidth: "225px", height: "35px", flex: { md: "1 1 60%" } }}>
             <SearchIconWrapper>
               <SearchIcon />
             </SearchIconWrapper>
