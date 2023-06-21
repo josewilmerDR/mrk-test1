@@ -236,21 +236,22 @@ def create_seller():
 
     # Guardamos la imagen en Cloudinary
     # Consigue un timestamp y formatea como string
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    # timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-    image_cloudinary_url = cloudinary.uploader.upload(
-        request.files["image_of_recipe"],
-        public_id=f'{request.form.get("user_query").replace(" ", "_")}_{timestamp}',
-    )[
-        "url"
-    ]  # Extract the 'url' from the returned dictionary
+    # image_cloudinary_url = cloudinary.uploader.upload(
+    #     request.files["image_of_recipe"],
+    #     public_id=f'{request.form.get("user_query").replace(" ", "_")}_{timestamp}',
+    # )[
+    #     "url"
+    # ]  # Extract the 'url' from the returned dictionary
 
     # Creamos un nuevo objeto de seller y lo agregamos a la base de datos
     new_product = Product(
         name=name,
         description=description,
         bar_code=bar_code,
-        image=image_cloudinary_url,
+        # image=image_cloudinary_url,
+        image=image,
         price=price,
         stock=stock,
         date_listed=datetime.now(),
@@ -272,7 +273,7 @@ def create_seller():
         jsonify(
             {
                 "message": "Producto creado correctamente",
-                "image_url": image_cloudinary_url,
+                # "image_url": image_cloudinary_url,
             }
         ),
         201,
