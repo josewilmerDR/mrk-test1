@@ -52,8 +52,9 @@ const AddProductModal = ({ open, onClose, onSave }) => {
     e.preventDefault();
 
     let body = new FormData();
-    body.append('image_of_product', image);
+    body.append('image', image);
     body.append('name', name);
+    body.append('description', description);
     body.append('bar_code', barCode);
     body.append('price', price);
     body.append('stock', stock);
@@ -63,7 +64,7 @@ const AddProductModal = ({ open, onClose, onSave }) => {
     body.append('offer_price', offer_price);
     body.append('offer_start_date', offer_start_date);
     body.append('offer_end_date', offer_end_date);
-    body.append('offer_active', offer_active);
+    body.append('offer_active', offer_active === "true" ? true : false);
     body.append('seller_id', seller_id);
 
     const options = {
@@ -184,14 +185,6 @@ const AddProductModal = ({ open, onClose, onSave }) => {
 
         <TextField
           margin="dense"
-          id="barcode"
-          label="Codigo de barra"
-          type="text"
-          fullWidth
-          onChange={event => setBarCode(event.target.value)}
-        />
-        <TextField
-          margin="dense"
           id="price"
           label="Precio"
           type="text"
@@ -221,6 +214,14 @@ const AddProductModal = ({ open, onClose, onSave }) => {
           type="float"
           fullWidth
           onChange={event => setSpecialTax(event.target.value)}
+        />
+        <TextField
+          margin="dense"
+          id="seller_id"
+          label="Comercio"
+          type="text"
+          fullWidth
+          onChange={event => setSeller_id(event.target.value)}
         />
         <TextField
           margin="dense"
@@ -257,6 +258,7 @@ const AddProductModal = ({ open, onClose, onSave }) => {
             variant='outlined'
             id="offer_start_date"
             label="Fecha de inicio de oferta"
+            placeholder='aaaa/mm/dd'
             type="date"
             fullWidth
             disabled={!offer_active}
@@ -268,7 +270,7 @@ const AddProductModal = ({ open, onClose, onSave }) => {
             variant='outlined'
             id="offer_end_date"
             label="Fecha de fin de oferta"
-            placeholder='dd/mm/aaaa'
+            placeholder='aaaa/mm/dd'
             type="date"
             fullWidth
             disabled={!offer_active}

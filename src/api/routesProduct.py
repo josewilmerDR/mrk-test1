@@ -6,7 +6,8 @@ import re
 
 from flask import Flask, request, jsonify, url_for, Blueprint, current_app
 from api.models import User, Seller
-from api.modelsProduct import Product
+from api.modelsProduct import Product, ReviewProduct
+from sqlalchemy import func
 from api.db import db
 from .models import TokenBlokedList
 
@@ -192,92 +193,103 @@ def get_all_products():
 
 @routes_product.route("/create-product", methods=["POST"])
 @jwt_required()
-def create_seller():
+def create_product():
     # Obtenemos el ID del usuario del token
     jwt_claims = get_jwt()
     user_id = jwt_claims["user_id"]
 
-    # Obtenemos los datos del cuerpo de la solicitud
-    body = request.get_json()
+    if "name" not in request.form:
+        raise APIException("No name provide")
+    if "image" not in request.files:
+        raise APIException("No image to upload")
+    if "description" not in request.form:
+        raise APIException("No description to upload")
+    if "price" not in request.form:
+        raise APIException("No price provide")
 
-    # Si el cuerpo está vacío, lanzamos un error
-    if not body:
-        raise APIException(
-            {"message": "Necesitas especificar el body"}, status_code=400
-        )
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-    # Verificamos que todos los campos requeridos estén presentes
-    for field in [
-        "name",
-        "description",
-        "price",
-    ]:
-        if field not in body:
-            raise APIException(
-                {"message": f"Necesitas especificar {field}"}, status_code=400
-            )
-
-    # Extraemos los datos del cuerpo
-    name = body["name"]
-    description = body["description"]
-    bar_code = body["bar_code"]
-    image = body["image"]
-    price = body["price"]
-    stock = body["stock"]
-    tax = body["tax"]
-    special_tax = body["special_tax"]
-    category_id = body["category_id"]
-    offer_price = body["offer_price"]
-    offer_active = body["offer_active"]
-    offer_start_date = body["offer_start_date"]
-    offer_end_date = body["offer_end_date"]
-    seller_id = body["seller_id"]
-    # country = body["country"]
-
-    # Guardamos la imagen en Cloudinary
-    # Consigue un timestamp y formatea como string
-    # timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-    # image_cloudinary_url = cloudinary.uploader.upload(
-    #     request.files["image_of_recipe"],
-    #     public_id=f'{request.form.get("user_query").replace(" ", "_")}_{timestamp}',
-    # )[
-    #     "url"
-    # ]  # Extract the 'url' from the returned dictionary
+    image_cloudinary_url = cloudinary.uploader.upload(
+        request.files["image"],
+        public_id=f'{request.form.get("name").replace(" ", "_")}_{timestamp}',
+    )[
+        "url"
+    ]  # Extract the 'url' from the returned dictionary
 
     # Creamos un nuevo objeto de seller y lo agregamos a la base de datos
+
+    offer_active_str = request.form.get("offer_active")
+    offer_active_bool = (
+        offer_active_str.lower() == "true" if offer_active_str else False
+    )
+
     new_product = Product(
-        name=name,
-        description=description,
-        bar_code=bar_code,
-        # image=image_cloudinary_url,
-        image=image,
-        price=price,
-        stock=stock,
+        name=request.form.get("name"),
+        description=request.form.get("description"),
+        bar_code=request.form.get("bar_code"),
+        image=image_cloudinary_url,
+        price=request.form.get("price"),
+        stock=request.form.get("stock"),
         date_listed=datetime.now(),
-        tax=tax,
-        special_tax=special_tax,
-        offer_price=offer_price,
-        offer_active=offer_active,
-        offer_start_date=offer_start_date,
-        offer_end_date=offer_end_date,
-        category_id=category_id,
-        seller_id=seller_id,
+        tax=request.form.get("tax"),
+        special_tax=request.form.get("special_tax"),
+        offer_price=request.form.get("offer_price"),
+        # offer_active=request.form.get("offer_active"),
+        offer_active=offer_active_bool,
+        offer_start_date=request.form.get("offer_start_date"),
+        offer_end_date=request.form.get("offer_end_date"),
+        category_id=request.form.get("category_id"),
+        seller_id=request.form.get("seller_id"),
         user_id=user_id,
     )
     db.session.add(new_product)
     db.session.commit()
 
     # Devolvemos una respuesta JSON con un mensaje y un código de estado HTTP 201 (creado)
-    return (
-        jsonify(
-            {
-                "message": "Producto creado correctamente",
-                # "image_url": image_cloudinary_url,
-            }
-        ),
-        201,
+    return jsonify(
+        {
+            "recipe": request.form.get("name"),
+            "image_url": image_cloudinary_url,
+            "recipe_id": new_product.id,
+        }
     )
+
+
+# Ruta para obtener un promedio de los ratings de un producto
+@routes_product.route("/products/<int:product_id>")
+def get_product(product_id):
+    product = Product.query.get(product_id)
+    if product is None:
+        return jsonify({"error": "Producto no encontrado"}), 404
+
+    avg_rating = (
+        db.session.query(func.avg(ReviewProduct.rating))
+        .filter_by(product_id=product.id)
+        .scalar()
+    )
+    rating_count = (
+        db.session.query(func.count(ReviewProduct.id))
+        .filter_by(product_id=product.id)
+        .scalar()
+    )
+
+    return jsonify(
+        {
+            "product": product.serialize(),
+            "average_rating": avg_rating,
+            "rating_count": rating_count,
+        }
+    )
+
+    # return (
+    #     jsonify(
+    #         {
+    #             "message": "Producto creado correctamente",
+    #             "image_url": image_cloudinary_url,
+    #         }
+    #     ),
+    #     201,
+    # )
 
 
 # # 2 - LOGIN DE USUARIO.
