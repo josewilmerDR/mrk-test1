@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: a2714ad6c263
+Revision ID: 38216b6b0824
 Revises: 
-Create Date: 2023-06-16 20:51:34.998209
+Create Date: 2023-06-22 17:12:58.410733
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'a2714ad6c263'
+revision = '38216b6b0824'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -141,7 +141,7 @@ def upgrade():
     op.create_table('product',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=120), nullable=False),
-    sa.Column('description', sa.String(length=120), nullable=False),
+    sa.Column('description', sa.String(length=4096), nullable=False),
     sa.Column('bar_code', sa.String(length=120), nullable=True),
     sa.Column('image', sa.String(length=120), nullable=True),
     sa.Column('price', sa.String(length=120), nullable=False),
@@ -164,9 +164,9 @@ def upgrade():
     )
     op.create_table('review_seller',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('review', sa.String(length=120), nullable=False),
-    sa.Column('rating', sa.String(length=120), nullable=False),
-    sa.Column('review_date', sa.Date(), nullable=False),
+    sa.Column('review', sa.String(length=512), nullable=True),
+    sa.Column('rating', sa.Float(), nullable=False),
+    sa.Column('review_date', sa.DateTime(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('seller_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['seller_id'], ['seller.id'], ),
@@ -193,9 +193,10 @@ def upgrade():
     )
     op.create_table('review_product',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('review', sa.String(length=120), nullable=False),
-    sa.Column('rating', sa.String(length=120), nullable=False),
-    sa.Column('review_date', sa.Date(), nullable=False),
+    sa.Column('review', sa.String(length=512), nullable=True),
+    sa.Column('rating', sa.Float(), nullable=False),
+    sa.Column('is_edited', sa.Boolean(), nullable=True),
+    sa.Column('review_date', sa.DateTime(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('product_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),

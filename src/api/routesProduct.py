@@ -5,8 +5,8 @@ import os
 import re
 
 from flask import Flask, request, jsonify, url_for, Blueprint, current_app
-from api.models import User, Seller
-from api.modelsProduct import Product, ReviewProduct
+from api.models import User, Seller, ReviewProduct
+from api.modelsProduct import Product
 from sqlalchemy import func
 from api.db import db
 from .models import TokenBlokedList
@@ -281,15 +281,16 @@ def get_product(product_id):
         }
     )
 
-    # return (
-    #     jsonify(
-    #         {
-    #             "message": "Producto creado correctamente",
-    #             "image_url": image_cloudinary_url,
-    #         }
-    #     ),
-    #     201,
-    # )
+
+# return (
+#     jsonify(
+#         {
+#             "message": "Producto creado correctamente",
+#             "image_url": image_cloudinary_url,
+#         }
+#     ),
+#     201,
+# )
 
 
 # # 2 - LOGIN DE USUARIO.

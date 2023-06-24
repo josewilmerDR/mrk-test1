@@ -13,7 +13,8 @@ export const Home = () => {
   const product = {
     image:
       "https://res.cloudinary.com/doqx408xv/image/upload/v1687119846/markettika/zapatos-para-ninos-27-al-32-1466-3_egoxeg.png",
-    title: "Zapatos para niños talla 27 al 32",
+    title:
+      "Zapatos para niños talla 27 al 32, el mejor zapato para esta temporada escolar",
     price: 100,
     rating: 4,
     votes: 200,
@@ -50,9 +51,16 @@ export const Home = () => {
         <p>Aquí sección de subir imagenes</p>
         <Uploader />
       </div>
-      <div>Más gustados</div>
-
-      <ProductCard product={product} />
+      <h3>Más gustados en Zapatos</h3>
+      <div style={{ display: "flex", flexWrap: "wrap" }}>
+        <ProductCard product={product} />
+        <ProductCard product={product} />
+        <ProductCard product={product} />
+        <ProductCard product={product} />
+        <ProductCard product={product} />
+        <ProductCard product={product} />
+        <ProductCard product={product} />
+      </div>
     </div>
   );
 };
