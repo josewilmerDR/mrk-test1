@@ -12,18 +12,6 @@ const ProductCard = ({ product }) => {
     </Box>
   );
 
-  // const renderer = ({ hours, minutes, seconds, completed }) => {
-  //   if (completed) {
-  //     return <Typography>¡La oferta ha finalizado!</Typography>;
-  //   } else {
-  //     return (
-  //       <Typography>
-  //         Tiempo restante: {hours}:{minutes}:{seconds}
-  //       </Typography>
-  //     );
-  //   }
-  // };
-
   return (
     <Card sx={{ height: "440px", width: "300px", m: "5px" }}>
       <CardMedia
@@ -40,9 +28,6 @@ const ProductCard = ({ product }) => {
         <Typography variant="body2" color="text.secondary" sx={{ fontSize: "1.5rem" }}>
           USD ${price}
         </Typography>
-
-        {/* {isOnSale && <Chip label="Oferta" color="primary" />}
-        {isOnSale && <Countdown date={saleEndsAt} renderer={renderer} />} */}
       </CardContent>
     </Card>
   );

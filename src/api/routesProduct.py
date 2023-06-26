@@ -191,6 +191,34 @@ def get_all_products():
     return jsonify(product), 200
 
 
+# Ruta para obtener todos los productos de todos los usuarios.
+@routes_product.route("/all-products-general", methods=["GET"])
+def get_all_products_general():
+    # Obtener todos los productos actualmente en la base de datos
+    product = Product.query.all()
+    product = list(map(lambda item: item.serialize(), product))
+    print(product)
+
+    return jsonify(product), 200
+
+
+@routes_product.route("/all-products-shoes", methods=["GET"])
+def get_all_products_shoes():
+    # Obtén la categoría "Zapatos"
+    category = Category.query.filter_by(category_name="Zapatos").first()
+
+    if not category:
+        return jsonify({"error": "Category not found"}), 404
+
+    # Obtén todos los productos en la categoría "Zapatos"
+    products = Product.query.filter_by(category_id=category.id).all()
+    products = list(map(lambda item: item.serialize(), products))
+    print(products)
+
+    return jsonify(products), 200
+
+
+# Ruta parae crear un producto.
 @routes_product.route("/create-product", methods=["POST"])
 @jwt_required()
 def create_product():
@@ -256,7 +284,7 @@ def create_product():
 
 
 # Ruta para obtener un promedio de los ratings de un producto
-@routes_product.route("/products/<int:product_id>")
+@routes_product.route("/products/<int:product_id>", methods=["GET"])
 def get_product(product_id):
     product = Product.query.get(product_id)
     if product is None:
@@ -280,6 +308,46 @@ def get_product(product_id):
             "rating_count": rating_count,
         }
     )
+
+
+# Ruta para obtener los detalles de un producto
+@routes_product.route("/product/<int:product_id>", methods=["GET"])
+def get_product_details(product_id):
+    product = Product.query.get(product_id)
+    if product is None:
+        return jsonify({"error": "Producto no encontrado"}), 404
+    return jsonify(product.serialize())
+
+
+@routes_product.route("/products/<int:product_id>/reviews", methods=["POST"])
+@jwt_required()
+def add_product_review(product_id):
+    jwt_claims = get_jwt()
+    user_id = jwt_claims["user_id"]
+
+    data = request.get_json()
+    rating = data["rating"]
+    review = data["review"]
+
+    # Verifica si la puntuación es válida
+    if rating is None or not 1 <= rating <= 5:
+        return jsonify({"error": "Invalid rating, it must be between 1 and 5."}), 400
+
+    # Verifica si el usuario ya hizo una review para este producto
+    existing_review = ReviewProduct.query.filter_by(
+        user_id=user_id, product_id=product_id
+    ).first()
+    if existing_review:
+        return jsonify({"error": "You have already reviewed this product."}), 400
+
+    # Crea la nueva review
+    new_review = ReviewProduct(
+        review=review, rating=rating, user_id=user_id, product_id=product_id
+    )
+    db.session.add(new_review)
+    db.session.commit()
+
+    return jsonify({"message": "Review added successfully."}), 201
 
 
 # return (

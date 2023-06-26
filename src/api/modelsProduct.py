@@ -1,7 +1,8 @@
 from flask_sqlalchemy import SQLAlchemy
 from .db import db
 
-from .models import User, Seller
+from .models import User, Seller, ReviewProduct
+from sqlalchemy import func
 
 
 class Product(db.Model):
@@ -13,7 +14,6 @@ class Product(db.Model):
     image = db.Column(db.String(120), unique=False, nullable=True)
     price = db.Column(db.String(120), unique=False, nullable=False)
     stock = db.Column(db.String(120), unique=False, nullable=True)
-    rating = db.Column(db.String(120), unique=False, nullable=True)
     date_listed = db.Column(db.Date, unique=False, nullable=False)
     tax = db.Column(db.Float, unique=False, nullable=True)
     special_tax = db.Column(db.Float, unique=False, nullable=True)
@@ -35,6 +35,22 @@ class Product(db.Model):
     def __repr__(self):
         return f"<Product {self.name}>"
 
+    @property
+    def average_rating(self):
+        return (
+            db.session.query(func.avg(ReviewProduct.rating))
+            .filter_by(product_id=self.id)
+            .scalar()
+        )
+
+    @property
+    def rating_count(self):
+        return (
+            db.session.query(func.count(ReviewProduct.id))
+            .filter_by(product_id=self.id)
+            .scalar()
+        )
+
     def serialize(self):
         return {
             "id": self.id,
@@ -44,7 +60,8 @@ class Product(db.Model):
             "image": self.image,
             "price": self.price,
             "stock": self.stock,
-            "rating": self.rating,
+            "average_rating": self.average_rating,
+            "rating_count": self.rating_count,
             "date_listed": self.date_listed,
             "tax": self.tax,
             "special_tax": self.special_tax,
