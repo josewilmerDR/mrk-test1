@@ -6,6 +6,7 @@ import PopUp from "../component/popUp.jsx";
 import TopSellers from "../component/topSellers.jsx";
 import TopShoes from "../component/topShoes.jsx";
 import AllProductsShoes from "./AllProductsShoes";
+import AllProducts from "./AllProducts";
 
 export const Home = () => {
   const { store, actions } = useContext(Context);
@@ -36,9 +37,9 @@ export const Home = () => {
         <p>Aquí sección de subir imagenes</p>
         <Uploader />
       </div>
-      <h3>Más gustados en Zapatos</h3>
+      <h3>Lo más valorado en Zapatos</h3>
       <div style={{ display: "flex", flexWrap: "wrap" }}>
-        <AllProductsShoes />
+        <AllProducts />
       </div>
     </div>
   );

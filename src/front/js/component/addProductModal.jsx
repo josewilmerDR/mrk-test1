@@ -19,6 +19,10 @@ const AddProductModal = ({ open, onClose, onSave }) => {
   const [image, setImage] = useState('');
   const [price, setPrice] = useState('');
   const [stock, setStock] = useState('');
+  const [color, setSColor] = useState('');
+  const [size, setSize] = useState('');
+  const [gender, setGender] = useState('');
+
   const [tax, setTax] = useState('');
   const [specialTax, setSpecialTax] = useState('');
   const [category_id, setCategory_id] = useState('');
@@ -58,6 +62,9 @@ const AddProductModal = ({ open, onClose, onSave }) => {
     body.append('bar_code', barCode);
     body.append('price', price);
     body.append('stock', stock);
+    body.append('color', color);
+    body.append('size', size);
+    body.append('gender', gender);
     body.append('tax', tax);
     body.append('special_tax', specialTax);
     body.append('category_id', category_id);
@@ -199,6 +206,33 @@ const AddProductModal = ({ open, onClose, onSave }) => {
           fullWidth
           onChange={event => setStock(event.target.value)}
         />
+        <TextField
+          margin="dense"
+          id="color"
+          label="Color"
+          type="text"
+          fullWidth
+          onChange={event => setColor(event.target.value)}
+        />
+        <TextField
+          margin="dense"
+          id="size"
+          label="Tamano"
+          type="text"
+          fullWidth
+          onChange={event => setSize(event.target.value)}
+        />
+        <TextField
+          margin="dense"
+          id="gender"
+          label="Genero"
+          type="text"
+          fullWidth
+          onChange={event => setGender(event.target.value)}
+        />
+
+
+
         <TextField
           margin="dense"
           id="tax"

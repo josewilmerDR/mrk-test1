@@ -14,6 +14,9 @@ class Product(db.Model):
     image = db.Column(db.String(120), unique=False, nullable=True)
     price = db.Column(db.String(120), unique=False, nullable=False)
     stock = db.Column(db.String(120), unique=False, nullable=True)
+    color = db.Column(db.String(120), unique=False, nullable=True)
+    size = db.Column(db.String(120), unique=False, nullable=True)
+    gender = db.Column(db.String(120), unique=False, nullable=True)
     date_listed = db.Column(db.Date, unique=False, nullable=False)
     tax = db.Column(db.Float, unique=False, nullable=True)
     special_tax = db.Column(db.Float, unique=False, nullable=True)
@@ -60,6 +63,9 @@ class Product(db.Model):
             "image": self.image,
             "price": self.price,
             "stock": self.stock,
+            "color": self.color,
+            "size": self.size,
+            "gender": self.gender,
             "average_rating": self.average_rating,
             "rating_count": self.rating_count,
             "date_listed": self.date_listed,

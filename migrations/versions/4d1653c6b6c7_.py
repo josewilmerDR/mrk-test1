@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: b0b8c230a42e
+Revision ID: 4d1653c6b6c7
 Revises: 
-Create Date: 2023-06-26 10:53:01.935776
+Create Date: 2023-06-26 20:12:53.479494
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'b0b8c230a42e'
+revision = '4d1653c6b6c7'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -146,6 +146,9 @@ def upgrade():
     sa.Column('image', sa.String(length=120), nullable=True),
     sa.Column('price', sa.String(length=120), nullable=False),
     sa.Column('stock', sa.String(length=120), nullable=True),
+    sa.Column('color', sa.String(length=120), nullable=True),
+    sa.Column('size', sa.String(length=120), nullable=True),
+    sa.Column('gender', sa.String(length=120), nullable=True),
     sa.Column('date_listed', sa.Date(), nullable=False),
     sa.Column('tax', sa.Float(), nullable=True),
     sa.Column('special_tax', sa.Float(), nullable=True),
@@ -182,11 +185,19 @@ def upgrade():
     )
     op.create_table('order_detail',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('order_detail_quantity', sa.String(length=120), nullable=False),
-    sa.Column('order_detail_price', sa.String(length=120), nullable=False),
+    sa.Column('quantity', sa.String(length=120), nullable=False),
+    sa.Column('price_unit', sa.Float(), nullable=False),
+    sa.Column('total', sa.Float(), nullable=False),
+    sa.Column('color', sa.String(length=120), nullable=True),
+    sa.Column('size', sa.String(length=120), nullable=True),
+    sa.Column('gender', sa.String(length=120), nullable=True),
+    sa.Column('payment_method', sa.Integer(), nullable=True),
+    sa.Column('address', sa.Integer(), nullable=True),
     sa.Column('order_id', sa.Integer(), nullable=True),
     sa.Column('product_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['address'], ['delivery_address.id'], ),
     sa.ForeignKeyConstraint(['order_id'], ['order.id'], ),
+    sa.ForeignKeyConstraint(['payment_method'], ['payment.id'], ),
     sa.ForeignKeyConstraint(['product_id'], ['product.id'], ),
     sa.PrimaryKeyConstraint('id')
     )

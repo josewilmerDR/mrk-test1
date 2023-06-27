@@ -4,6 +4,8 @@ from .db import db
 from .models import User
 from .modelsProduct import Product
 
+# from .modelsPayment import Payment
+
 
 class Order(db.Model):
     __tablename__ = "order"
@@ -34,8 +36,15 @@ class Order(db.Model):
 class OrderDetail(db.Model):
     __tablename__ = "order_detail"
     id = db.Column(db.Integer, primary_key=True)
-    order_detail_quantity = db.Column(db.String(120), unique=False, nullable=False)
-    order_detail_price = db.Column(db.String(120), unique=False, nullable=False)
+    quantity = db.Column(db.String(120), unique=False, nullable=False)
+    price_unit = db.Column(db.Float, unique=False, nullable=False)
+    total = db.Column(db.Float, unique=False, nullable=False)
+    color = db.Column(db.String(120), unique=False, nullable=True)
+    size = db.Column(db.String(120), unique=False, nullable=True)
+    gender = db.Column(db.String(120), unique=False, nullable=True)
+
+    payment_method = db.Column(db.Integer, db.ForeignKey("payment.id"))
+    address = db.Column(db.Integer, db.ForeignKey("delivery_address.id"))
 
     order_id = db.Column(db.Integer, db.ForeignKey("order.id"))
     product_id = db.Column(db.Integer, db.ForeignKey("product.id"))
@@ -62,6 +71,8 @@ class DeliveryAddress(db.Model):
     order_delivery_address = db.relationship(
         "OrderDeliveryAddress", backref="delivery_address", lazy=True
     )
+
+    order_detail = db.relationship("OrderDetail", backref="delivery_address", lazy=True)
 
     def __repr__(self):
         return f"<Delivery {self.id}>"

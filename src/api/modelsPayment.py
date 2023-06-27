@@ -13,6 +13,8 @@ class Payment(db.Model):
     payment_status = db.Column(db.String(120), unique=False, nullable=False)
     payment_date = db.Column(db.Date, unique=False, nullable=False)
 
+    order_detail = db.relationship("OrderDetail", backref="payment", lazy=True)
+
     order_id = db.Column(db.Integer, db.ForeignKey("order.id"))
 
     def __repr__(self):
