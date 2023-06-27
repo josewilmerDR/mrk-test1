@@ -5,6 +5,8 @@ import Uploader from "../component/uploader/uploader.jsx";
 import PopUp from "../component/popUp.jsx";
 import TopSellers from "../component/topSellers.jsx";
 import TopShoes from "../component/topShoes.jsx";
+import AllProductsShoes from "./AllProductsShoes";
+import AllProducts from "./AllProducts";
 
 export const Home = () => {
   const { store, actions } = useContext(Context);
@@ -16,10 +18,7 @@ export const Home = () => {
         <h3>Vendedores mejor puntuados</h3>
         <TopSellers />
       </div>
-      <div>
-        <h3>Más vendido en Zapatos</h3>
-        <TopShoes />
-      </div>
+
       <div>
         <h3>Ofertas relámpago</h3>
         <TopSellers />
@@ -37,6 +36,10 @@ export const Home = () => {
       <div>
         <p>Aquí sección de subir imagenes</p>
         <Uploader />
+      </div>
+      <h3>Lo más valorado en Zapatos</h3>
+      <div style={{ display: "flex", flexWrap: "wrap" }}>
+        <AllProducts />
       </div>
     </div>
   );

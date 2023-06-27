@@ -5,8 +5,9 @@ import os
 import re
 
 from flask import Flask, request, jsonify, url_for, Blueprint, current_app
-from api.models import User, Seller
+from api.models import User, Seller, ReviewProduct
 from api.modelsProduct import Product
+from sqlalchemy import func
 from api.db import db
 from .models import TokenBlokedList
 
@@ -190,93 +191,177 @@ def get_all_products():
     return jsonify(product), 200
 
 
+# Ruta para obtener todos los productos de todos los usuarios.
+@routes_product.route("/all-products-general", methods=["GET"])
+def get_all_products_general():
+    # Obtener todos los productos actualmente en la base de datos
+    product = Product.query.all()
+    product = list(map(lambda item: item.serialize(), product))
+    print(product)
+
+    return jsonify(product), 200
+
+
+@routes_product.route("/all-products-shoes", methods=["GET"])
+def get_all_products_shoes():
+    # Obtén la categoría "Zapatos"
+    category = Category.query.filter_by(category_name="Zapatos").first()
+
+    if not category:
+        return jsonify({"error": "Category not found"}), 404
+
+    # Obtén todos los productos en la categoría "Zapatos"
+    products = Product.query.filter_by(category_id=category.id).all()
+    products = list(map(lambda item: item.serialize(), products))
+    print(products)
+
+    return jsonify(products), 200
+
+
+# Ruta parae crear un producto.
 @routes_product.route("/create-product", methods=["POST"])
 @jwt_required()
-def create_seller():
+def create_product():
     # Obtenemos el ID del usuario del token
     jwt_claims = get_jwt()
     user_id = jwt_claims["user_id"]
 
-    # Obtenemos los datos del cuerpo de la solicitud
-    body = request.get_json()
+    if "name" not in request.form:
+        raise APIException("No name provide")
+    if "image" not in request.files:
+        raise APIException("No image to upload")
+    if "description" not in request.form:
+        raise APIException("No description to upload")
+    if "price" not in request.form:
+        raise APIException("No price provide")
 
-    # Si el cuerpo está vacío, lanzamos un error
-    if not body:
-        raise APIException(
-            {"message": "Necesitas especificar el body"}, status_code=400
-        )
-
-    # Verificamos que todos los campos requeridos estén presentes
-    for field in [
-        "name",
-        "description",
-        "price",
-    ]:
-        if field not in body:
-            raise APIException(
-                {"message": f"Necesitas especificar {field}"}, status_code=400
-            )
-
-    # Extraemos los datos del cuerpo
-    name = body["name"]
-    description = body["description"]
-    bar_code = body["bar_code"]
-    image = body["image"]
-    price = body["price"]
-    stock = body["stock"]
-    tax = body["tax"]
-    special_tax = body["special_tax"]
-    category_id = body["category_id"]
-    offer_price = body["offer_price"]
-    offer_active = body["offer_active"]
-    offer_start_date = body["offer_start_date"]
-    offer_end_date = body["offer_end_date"]
-    seller_id = body["seller_id"]
-    # country = body["country"]
-
-    # Guardamos la imagen en Cloudinary
-    # Consigue un timestamp y formatea como string
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
     image_cloudinary_url = cloudinary.uploader.upload(
-        request.files["image_of_recipe"],
-        public_id=f'{request.form.get("user_query").replace(" ", "_")}_{timestamp}',
+        request.files["image"],
+        public_id=f'{request.form.get("name").replace(" ", "_")}_{timestamp}',
     )[
         "url"
     ]  # Extract the 'url' from the returned dictionary
 
     # Creamos un nuevo objeto de seller y lo agregamos a la base de datos
+
+    offer_active_str = request.form.get("offer_active")
+    offer_active_bool = (
+        offer_active_str.lower() == "true" if offer_active_str else False
+    )
+
     new_product = Product(
-        name=name,
-        description=description,
-        bar_code=bar_code,
+        name=request.form.get("name"),
+        description=request.form.get("description"),
+        bar_code=request.form.get("bar_code"),
         image=image_cloudinary_url,
-        price=price,
-        stock=stock,
+        price=request.form.get("price"),
+        stock=request.form.get("stock"),
+        color=request.form.get("color"),
+        size=request.form.get("size"),
+        gender=request.form.get("gender"),
         date_listed=datetime.now(),
-        tax=tax,
-        special_tax=special_tax,
-        offer_price=offer_price,
-        offer_active=offer_active,
-        offer_start_date=offer_start_date,
-        offer_end_date=offer_end_date,
-        category_id=category_id,
-        seller_id=seller_id,
+        tax=request.form.get("tax"),
+        special_tax=request.form.get("special_tax"),
+        offer_price=request.form.get("offer_price"),
+        # offer_active=request.form.get("offer_active"),
+        offer_active=offer_active_bool,
+        offer_start_date=request.form.get("offer_start_date"),
+        offer_end_date=request.form.get("offer_end_date"),
+        category_id=request.form.get("category_id"),
+        seller_id=request.form.get("seller_id"),
         user_id=user_id,
     )
     db.session.add(new_product)
     db.session.commit()
 
     # Devolvemos una respuesta JSON con un mensaje y un código de estado HTTP 201 (creado)
-    return (
-        jsonify(
-            {
-                "message": "Producto creado correctamente",
-                "image_url": image_cloudinary_url,
-            }
-        ),
-        201,
+    return jsonify(
+        {
+            "recipe": request.form.get("name"),
+            "image_url": image_cloudinary_url,
+            "recipe_id": new_product.id,
+        }
     )
+
+
+# Ruta para obtener un promedio de los ratings de un producto
+@routes_product.route("/products/<int:product_id>", methods=["GET"])
+def get_product(product_id):
+    product = Product.query.get(product_id)
+    if product is None:
+        return jsonify({"error": "Producto no encontrado"}), 404
+
+    avg_rating = (
+        db.session.query(func.avg(ReviewProduct.rating))
+        .filter_by(product_id=product.id)
+        .scalar()
+    )
+    rating_count = (
+        db.session.query(func.count(ReviewProduct.id))
+        .filter_by(product_id=product.id)
+        .scalar()
+    )
+
+    return jsonify(
+        {
+            "product": product.serialize(),
+            "average_rating": avg_rating,
+            "rating_count": rating_count,
+        }
+    )
+
+
+# Ruta para obtener los detalles de un producto
+@routes_product.route("/product/<int:product_id>", methods=["GET"])
+def get_product_details(product_id):
+    product = Product.query.get(product_id)
+    if product is None:
+        return jsonify({"error": "Producto no encontrado"}), 404
+    return jsonify(product.serialize())
+
+
+@routes_product.route("/products/<int:product_id>/reviews", methods=["POST"])
+@jwt_required()
+def add_product_review(product_id):
+    jwt_claims = get_jwt()
+    user_id = jwt_claims["user_id"]
+
+    data = request.get_json()
+    rating = data["rating"]
+    review = data["review"]
+
+    # Verifica si la puntuación es válida
+    if rating is None or not 1 <= rating <= 5:
+        return jsonify({"error": "Invalid rating, it must be between 1 and 5."}), 400
+
+    # Verifica si el usuario ya hizo una review para este producto
+    existing_review = ReviewProduct.query.filter_by(
+        user_id=user_id, product_id=product_id
+    ).first()
+    if existing_review:
+        return jsonify({"error": "You have already reviewed this product."}), 400
+
+    # Crea la nueva review
+    new_review = ReviewProduct(
+        review=review, rating=rating, user_id=user_id, product_id=product_id
+    )
+    db.session.add(new_review)
+    db.session.commit()
+
+    return jsonify({"message": "Review added successfully."}), 201
+
+
+# return (
+#     jsonify(
+#         {
+#             "message": "Producto creado correctamente",
+#             "image_url": image_cloudinary_url,
+#         }
+#     ),
+#     201,
+# )
 
 
 # # 2 - LOGIN DE USUARIO.

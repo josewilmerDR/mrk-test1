@@ -6,6 +6,7 @@ import re
 
 from flask import Flask, request, jsonify, url_for, Blueprint, current_app
 from api.models import User, Seller
+from api.modelsProduct import Product, Category
 from api.db import db
 from .models import TokenBlokedList
 
@@ -33,8 +34,6 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 
-# RUTAS QUE ENCONTRARÁ EN ESTE ARCHIVO: 1) USER REGISTER, 2) USER LOGIN, 3) USER DELETE, 4) USER UPDATE, 5) USER ACOUNT, 6) USER LOGOUT
-
 # PARA OPERACIONES CON FECHAS Y HORAS.
 from datetime import (
     date,
@@ -51,8 +50,20 @@ from email_validator import validate_email, EmailNotValidError
 from flask_jwt_extended import get_jwt
 from flask_jwt_extended import JWTManager
 
+# Configuración de Cloudinary
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
-routes_seller = Blueprint("routes_seller", __name__)
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+    api_proxy="http://proxy.server:9999",
+    secure=True,
+)
+
+routes_category = Blueprint("routes_category", __name__)
 
 EMAIL = os.environ.get("EMAIL")
 PASSWORD = os.environ.get("PASSWORD")
@@ -102,7 +113,7 @@ def sendEmail(message, to, subject):
     return jsonify({"message": "email sent"}), 200
 
 
-@routes_seller.route("/correo", methods=["POST"])
+@routes_category.route("/correo", methods=["POST"])
 def handle_email():
     body = request.get_json()
     message = body["message"]
@@ -114,80 +125,8 @@ def handle_email():
     return jsonify({"message": "message sent"}), 200
 
 
-# 1 - REGISTRO DE USUARIO.
-# VER DOCUMENTACION ADICIONAL SOBRE ESTA RUTA EN: https://www.notion.so/dicttaapp-1-REGISTRO-DE-USUARIO-7ed225b8b61a4461a68413a37253434c
-""" @api.route('/signup', methods=['POST'])
-def register_user():
-
-    # Obtenemos los datos del cuerpo de la solicitud
-    body = request.get_json()
-
-    # Extraemos los datos del cuerpo
-
-    name = body["name"]
-    last_name = body["lastname"]
-    email = body["email"]
-    password = body["password"]
-    country = body["country"]
-    gender = body["gender"]
-    
-    # Si el cuerpo está vacío, lanzamos un error
-    if body is None:
-        raise APIException("You need to specify the request body as json object", status_code=400) 
-    
-    # Verificamos que todos los campos requeridos estén presentes
-
-    if "name" not in body:
-        raise APIException("You need to specify the name", status_code=400)
-    if "lastname" not in body:
-        raise APIException("You need to specify the lastname", status_code=400)
-    if "email" not in body:
-        raise APIException("You need to specify the email", status_code=400)
-    if "password" not in body:
-        raise APIException("You need to specify the password", status_code=400)
-    if "country" not in body:
-        raise APIException("You need to specify the country", status_code=400)
-    if "gender" not in body:
-        raise APIException("You need to specify the gender", status_code=400)
-
-    # Verificamos que todos los campos requeridos estén presentes
-
-   
-    # Validar el formato del correo electrónico
-    try:
-        validate_email(email)
-        print(f"Email is valid: {email}")  # Agregamos esta línea para mostrar que el correo electrónico es válido
-    except EmailNotValidError:
-        return jsonify({"message": "El formato del correo electrónico es inválido."}), 400
-
-    # Validamos la contraseña y lanzamos un error si no cumple con los requisitos
-    if not validate_password(password):
-        raise APIException({"message": "La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula, una letra minúscula, un número y al menos un simbolo especial (@#$%^&+=*/)"}, status_code=400)
-
-    # if password != password_confirmation:
-    #     raise APIException({"message": "La contraseña y la confirmación de la contraseña no coinciden"}, status_code=400)
-
-    # Comprobamos si el correo electrónico ya está registrado
-    existing_user = User.query.filter_by(email=email).first()
-    if existing_user:
-        raise APIException({"message": "El correo electrónico ya está registrado"}, status_code=400)
-
-    # Encriptamos la contraseña antes de guardarla en la base de datos
-    password_escrypted = bcrypt.generate_password_hash(password, 10).decode('utf-8')
-
-    # Creamos un nuevo objeto de usuario y lo agregamos a la base de datos
-    new_user = User(email=email, name=name, last_name=last_name, password=password_escrypted)
-    db.session.add(new_user)
-    db.session.commit()
-
-
-    # Devolvemos una respuesta JSON con un mensaje y un código de estado HTTP 201 (creado)
-    return jsonify({"message": "Usuario creado correctamente"}), 201
- """
-
-
 # Handle/serialize errors like a JSON object
-@routes_seller.errorhandler(APIException)
+@routes_category.errorhandler(APIException)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
 
@@ -237,21 +176,26 @@ def validate_password(password):
 # 0 - [GET] /people Listar todos los registros de people en la base de datos
 
 
-@routes_seller.route("/all-sellers", methods=["GET"])
-def get_all_sellers():
-    seller = Seller.query.all()
-    seller = list(map(lambda item: item.serialize(), seller))
-    print(seller)
-
-    return jsonify(seller), 200
-
-
-@routes_seller.route("/create-seller", methods=["POST"])
+@routes_category.route("/all-categories", methods=["GET"])
 @jwt_required()
-def create_seller():
-    # Obtenemos el ID del usuario del token
+def get_all_products():
     jwt_claims = get_jwt()
     user_id = jwt_claims["user_id"]
+
+    # Obtener todos los productos del usuario logueado
+    category = Category.query.filter_by(user_id=user_id).all()
+    category = list(map(lambda item: item.serialize(), category))
+    print(category)
+
+    return jsonify(category), 200
+
+
+@routes_category.route("/create-category", methods=["POST"])
+# @jwt_required()
+def create_category():
+    # Obtenemos el ID del usuario del token
+    # jwt_claims = get_jwt()
+    # user_id = jwt_claims["user_id"]
 
     # Obtenemos los datos del cuerpo de la solicitud
     body = request.get_json()
@@ -264,12 +208,9 @@ def create_seller():
 
     # Verificamos que todos los campos requeridos estén presentes
     for field in [
-        "email",
-        "name",
-        "tax_id",
-        "description",
-        "phone",
-        "address",
+        "category_name",
+        "category_description",
+        "category_image",
     ]:
         if field not in body:
             raise APIException(
@@ -277,52 +218,41 @@ def create_seller():
             )
 
     # Extraemos los datos del cuerpo
-    email = body["email"]
-    name = body["name"]
-    tax_id = body["tax_id"]
-    description = body["description"]
-    phone = body["phone"]
-    address = body["address"]
-    # country = body["country"]
+    category_name = body["category_name"]
+    category_description = body["category_description"]
+    category_image = body["category_image"]
 
-    # Validar el formato del correo electrónico
-    try:
-        validate_email(email)
-        print(
-            f"Email is valid: {email}"
-        )  # Agregamos esta línea para mostrar que el correo electrónico es válido
-    except EmailNotValidError:
-        return (
-            jsonify({"message": "El formato del correo electrónico es inválido."}),
-            400,
-        )
+    # Guardamos la imagen en Cloudinary
+    # Consigue un timestamp y formatea como string
+    # timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-    # Buscamos el usuario por el id obtenido del token
-    user = User.query.get(user_id)
-    if not user:
-        raise APIException({"message": "Usuario no encontrado"}, status_code=404)
-
-    # Cambiamos el campo is_seller a True
-    user.is_seller = True
-    db.session.add(
-        user
-    )  # Agregamos el usuario a la sesión para que los cambios se guarden
+    # image_cloudinary_url = cloudinary.uploader.upload(
+    #     request.files["image_of_recipe"],
+    #     public_id=f'{request.form.get("user_query").replace(" ", "_")}_{timestamp}',
+    # )[
+    #     "url"
+    # ]  # Extract the 'url' from the returned dictionary
 
     # Creamos un nuevo objeto de seller y lo agregamos a la base de datos
-    new_seller = Seller(
-        name=name,
-        email=email,
-        tax_id=tax_id,
-        description=description,
-        phone=phone,
-        address=address,
-        user_id=user_id,
+    new_category = Category(
+        category_name=category_name,
+        category_description=category_description,
+        # image=image_cloudinary_url,
+        category_image=category_image,
     )
-    db.session.add(new_seller)
+    db.session.add(new_category)
     db.session.commit()
 
     # Devolvemos una respuesta JSON con un mensaje y un código de estado HTTP 201 (creado)
-    return jsonify({"message": "Cuenta de vendedor creado correctamente"}), 201
+    return (
+        jsonify(
+            {
+                "message": "Category creada correctamente",
+                # "image_url": image_cloudinary_url,
+            }
+        ),
+        201,
+    )
 
 
 # # 2 - LOGIN DE USUARIO.

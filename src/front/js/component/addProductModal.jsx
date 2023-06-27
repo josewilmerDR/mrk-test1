@@ -19,6 +19,10 @@ const AddProductModal = ({ open, onClose, onSave }) => {
   const [image, setImage] = useState('');
   const [price, setPrice] = useState('');
   const [stock, setStock] = useState('');
+  const [color, setSColor] = useState('');
+  const [size, setSize] = useState('');
+  const [gender, setGender] = useState('');
+
   const [tax, setTax] = useState('');
   const [specialTax, setSpecialTax] = useState('');
   const [category_id, setCategory_id] = useState('');
@@ -52,18 +56,22 @@ const AddProductModal = ({ open, onClose, onSave }) => {
     e.preventDefault();
 
     let body = new FormData();
-    body.append('image_of_product', image);
+    body.append('image', image);
     body.append('name', name);
+    body.append('description', description);
     body.append('bar_code', barCode);
     body.append('price', price);
     body.append('stock', stock);
+    body.append('color', color);
+    body.append('size', size);
+    body.append('gender', gender);
     body.append('tax', tax);
     body.append('special_tax', specialTax);
     body.append('category_id', category_id);
     body.append('offer_price', offer_price);
     body.append('offer_start_date', offer_start_date);
     body.append('offer_end_date', offer_end_date);
-    body.append('offer_active', offer_active);
+    body.append('offer_active', offer_active === "true" ? true : false);
     body.append('seller_id', seller_id);
 
     const options = {
@@ -184,14 +192,6 @@ const AddProductModal = ({ open, onClose, onSave }) => {
 
         <TextField
           margin="dense"
-          id="barcode"
-          label="Codigo de barra"
-          type="text"
-          fullWidth
-          onChange={event => setBarCode(event.target.value)}
-        />
-        <TextField
-          margin="dense"
           id="price"
           label="Precio"
           type="text"
@@ -208,6 +208,33 @@ const AddProductModal = ({ open, onClose, onSave }) => {
         />
         <TextField
           margin="dense"
+          id="color"
+          label="Color"
+          type="text"
+          fullWidth
+          onChange={event => setColor(event.target.value)}
+        />
+        <TextField
+          margin="dense"
+          id="size"
+          label="Tamano"
+          type="text"
+          fullWidth
+          onChange={event => setSize(event.target.value)}
+        />
+        <TextField
+          margin="dense"
+          id="gender"
+          label="Genero"
+          type="text"
+          fullWidth
+          onChange={event => setGender(event.target.value)}
+        />
+
+
+
+        <TextField
+          margin="dense"
           id="tax"
           label="Impuesto"
           type="float"
@@ -221,6 +248,14 @@ const AddProductModal = ({ open, onClose, onSave }) => {
           type="float"
           fullWidth
           onChange={event => setSpecialTax(event.target.value)}
+        />
+        <TextField
+          margin="dense"
+          id="seller_id"
+          label="Comercio"
+          type="text"
+          fullWidth
+          onChange={event => setSeller_id(event.target.value)}
         />
         <TextField
           margin="dense"
@@ -257,6 +292,7 @@ const AddProductModal = ({ open, onClose, onSave }) => {
             variant='outlined'
             id="offer_start_date"
             label="Fecha de inicio de oferta"
+            placeholder='aaaa/mm/dd'
             type="date"
             fullWidth
             disabled={!offer_active}
@@ -268,7 +304,7 @@ const AddProductModal = ({ open, onClose, onSave }) => {
             variant='outlined'
             id="offer_end_date"
             label="Fecha de fin de oferta"
-            placeholder='dd/mm/aaaa'
+            placeholder='aaaa/mm/dd'
             type="date"
             fullWidth
             disabled={!offer_active}

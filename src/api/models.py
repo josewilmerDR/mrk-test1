@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from .db import db
 
@@ -114,9 +115,10 @@ class Seller(db.Model):
 class ReviewProduct(db.Model):
     __tablename__ = "review_product"
     id = db.Column(db.Integer, primary_key=True)
-    review = db.Column(db.String(120), unique=False, nullable=False)
-    rating = db.Column(db.String(120), unique=False, nullable=False)
-    review_date = db.Column(db.Date, unique=False, nullable=False)
+    review = db.Column(db.String(512), unique=False, nullable=True)
+    rating = db.Column(db.Float, unique=False, nullable=False)
+    is_edited = db.Column(db.Boolean, default=False)
+    review_date = db.Column(db.DateTime, default=datetime.utcnow)
 
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     product_id = db.Column(db.Integer, db.ForeignKey("product.id"))
@@ -130,6 +132,7 @@ class ReviewProduct(db.Model):
             "review": self.review,
             "rating": self.rating,
             "review_date": self.review_date,
+            "is_edited": self.is_edited,
             "user_id": self.user_id,
             "product_id": self.product_id,
         }
@@ -138,9 +141,9 @@ class ReviewProduct(db.Model):
 class ReviewSeller(db.Model):
     __tablename__ = "review_seller"
     id = db.Column(db.Integer, primary_key=True)
-    review = db.Column(db.String(120), unique=False, nullable=False)
-    rating = db.Column(db.String(120), unique=False, nullable=False)
-    review_date = db.Column(db.Date, unique=False, nullable=False)
+    review = db.Column(db.String(512), unique=False, nullable=True)
+    rating = db.Column(db.Float, unique=False, nullable=False)
+    review_date = db.Column(db.DateTime, default=datetime.utcnow)
 
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     seller_id = db.Column(db.Integer, db.ForeignKey("seller.id"))
