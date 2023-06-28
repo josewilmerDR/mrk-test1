@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Box, Button, FormControl, MenuItem, Select, Typography } from '@mui/material';
+import { Box, Button, FormControl, MenuItem, Select, Typography, Rating } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import { styled } from '@mui/system';
 import { useParams } from 'react-router-dom'; // Importa useParams
@@ -68,7 +68,18 @@ const ProductDetails = () => {
           </Box>
           <Box sx={{ display: "flex", flexDirection: "column", width: "500px", height: "auto" }} >
             <h2>{product.name}</h2>
+            <p className="card-text" style={{ display: "flex" }}>
+              <Rating
+                name="read-only"
+                value={product.average_rating}
+                precision={0.1}
+                readOnly
+              />{" "}
+              <Typography>({product.rating_count})</Typography>{" "}
+            </p>
             <Divider />
+
+            <h2>USD {product.price}</h2>
 
             <Box mt={2} sx={{ width: "100px" }}>
               <FormControl variant="outlined" fullWidth>

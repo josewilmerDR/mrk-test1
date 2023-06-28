@@ -9,6 +9,7 @@ from api.models import User, Seller
 from api.modelsProduct import Product, Category
 from api.db import db
 from .models import TokenBlokedList
+from api.modelsOrder import Order, OrderDetail
 
 # from api.favoritos import Favorito
 
@@ -18,6 +19,7 @@ from api.modelsProduct import Category
 # from api.countries import Country
 # from api.likes import Like
 from api.utils import generate_sitemap, APIException
+from sqlalchemy.exc import SQLAlchemyError
 from datetime import datetime
 from itsdangerous import URLSafeTimedSerializer
 
@@ -63,7 +65,7 @@ cloudinary.config(
     secure=True,
 )
 
-routes_category = Blueprint("routes_category", __name__)
+routes_order = Blueprint("routes_order", __name__)
 
 EMAIL = os.environ.get("EMAIL")
 PASSWORD = os.environ.get("PASSWORD")
@@ -113,7 +115,7 @@ def sendEmail(message, to, subject):
     return jsonify({"message": "email sent"}), 200
 
 
-@routes_category.route("/correo", methods=["POST"])
+@routes_order.route("/correo", methods=["POST"])
 def handle_email():
     body = request.get_json()
     message = body["message"]
@@ -126,7 +128,7 @@ def handle_email():
 
 
 # Handle/serialize errors like a JSON object
-@routes_category.errorhandler(APIException)
+@routes_order.errorhandler(APIException)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
 
@@ -176,7 +178,7 @@ def validate_password(password):
 # 0 - [GET] /people Listar todos los registros de people en la base de datos
 
 
-@routes_category.route("/all-categories", methods=["GET"])
+@routes_order.route("/all-categories", methods=["GET"])
 @jwt_required()
 def get_all_products():
     jwt_claims = get_jwt()
@@ -190,12 +192,12 @@ def get_all_products():
     return jsonify(category), 200
 
 
-@routes_category.route("/create-category", methods=["POST"])
-# @jwt_required()
-def create_category():
+@routes_order.route("/create-order", methods=["POST"])
+@jwt_required()
+def create_order():
     # Obtenemos el ID del usuario del token
-    # jwt_claims = get_jwt()
-    # user_id = jwt_claims["user_id"]
+    jwt_claims = get_jwt()
+    user_id = jwt_claims["user_id"]
 
     # Obtenemos los datos del cuerpo de la solicitud
     body = request.get_json()
@@ -208,9 +210,9 @@ def create_category():
 
     # Verificamos que todos los campos requeridos estén presentes
     for field in [
-        "category_name",
-        "category_description",
-        "category_image",
+        "quantity",
+        "price_unit",
+        "size",
     ]:
         if field not in body:
             raise APIException(
@@ -218,9 +220,12 @@ def create_category():
             )
 
     # Extraemos los datos del cuerpo
-    category_name = body["category_name"]
-    category_description = body["category_description"]
-    category_image = body["category_image"]
+    quantity = body["quantity"]
+    price_unit = body["price_unit"]
+    total = body["total"]
+    size = body["size"]
+    order_status = body["order_status"]
+    order_date = body["order_date"]
 
     # Guardamos la imagen en Cloudinary
     # Consigue un timestamp y formatea como string
@@ -234,13 +239,16 @@ def create_category():
     # ]  # Extract the 'url' from the returned dictionary
 
     # Creamos un nuevo objeto de seller y lo agregamos a la base de datos
-    new_category = Category(
-        category_name=category_name,
-        category_description=category_description,
-        # image=image_cloudinary_url,
-        category_image=category_image,
+    new_order = OrderDetail(
+        quantity=quantity,
+        price_unit=price_unit,
+        total=total,
+        size=size,
+        order_status=order_status,
+        order_date=order_date,
+        user_id=user_id,
     )
-    db.session.add(new_category)
+    db.session.add(new_order)
     db.session.commit()
 
     # Devolvemos una respuesta JSON con un mensaje y un código de estado HTTP 201 (creado)
@@ -253,6 +261,54 @@ def create_category():
         ),
         201,
     )
+
+
+@routes_order.route("/checkout", methods=["POST"])
+@jwt_required()
+def checkout():
+    jwt_claims = get_jwt()
+    user_id = jwt_claims["user_id"]
+
+    data = request.json
+    cart = data.get(
+        "cart"
+    )  # El carrito viene en el cuerpo de la petición. Puedes adaptar esto según sea necesario.
+    if not cart:
+        return jsonify({"message": "El carrito está vacío"}), 400
+
+    order = Order(
+        order_date=date.today(),
+        order_status="processing",
+        user_id=user_id,
+        order_total=sum(item["price"] * item["quantity"] for item in cart),
+        payment_method=data.get("payment_method"),
+    )
+
+    for item in cart:
+        detail = OrderDetail(
+            quantity=item["quantity"],
+            price_unit=item["price"],
+            total=item["quantity"] * item["price"],
+            color=item["color"],
+            size=item["size"],
+            gender=item["gender"],
+            order=order,  # Esto establecerá automáticamente order_id
+            product_id=item["product_id"],
+        )
+        db.session.add(detail)
+
+    db.session.add(order)
+
+    try:
+        db.session.commit()
+    except SQLAlchemyError:
+        db.session.rollback()
+        return jsonify({"message": "Hubo un error al procesar tu orden"}), 500
+
+    # Aquí, podrías vaciar el carrito del usuario.
+    # Dependerá de cómo estés manejando el carrito.
+
+    return jsonify({"message": "Tu orden ha sido procesada exitosamente"}), 200
 
 
 # # 2 - LOGIN DE USUARIO.

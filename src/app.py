@@ -13,6 +13,7 @@ from api.models import db
 from api.routesUser import api
 from api.routesProduct import routes_product
 from api.routesCaregory import routes_category
+from api.routesOrder import routes_order
 
 from api.admin import setup_admin
 from api.commands import setup_commands
@@ -64,6 +65,7 @@ app.register_blueprint(api, url_prefix="/api")
 app.register_blueprint(routes_seller, url_prefix="/routes_seller")
 app.register_blueprint(routes_product, url_prefix="/routes_product")
 app.register_blueprint(routes_category, url_prefix="/routes_category")
+app.register_blueprint(routes_order, url_prefix="/routes_order")
 
 
 # Handle/serialize errors like a JSON object
