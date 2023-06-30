@@ -14,6 +14,7 @@ import Register from "./pages/register.jsx";
 import Login from "./pages/login.jsx";
 import MyAccount from "./pages/myAccount.jsx";
 import Dashboard from "./pages/dashboard/Dashboard";
+import DashboardCode from "./pages/dashboard/DashboardCode";
 import CreateSeller from "./pages/createSeller.jsx";
 import DashboardProduct from "./pages/dashboard/DashboardProducts";
 import QRReader from "./component/qrReader.jsx";
@@ -39,6 +40,7 @@ const Layout = () => {
             <Route element={<MyAccount />} path="/myAccount" />
             <Route element={<CreateSeller />} path="/create-seller" />
             <Route element={<Dashboard />} path="/dashboard-seller" />
+            <Route element={<DashboardCode />} path="/my-code" />
             <Route element={<DashboardProduct />} path="/my-products" />
             <Route element={<Home />} path="/" />
             <Route element={<Register />} path="/register" />

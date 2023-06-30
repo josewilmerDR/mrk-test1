@@ -281,17 +281,19 @@ def checkout():
         order_status="processing",
         user_id=user_id,
         order_total=sum(item["price"] * item["quantity"] for item in cart),
-        payment_method=data.get("payment_method"),
+        # payment_method=data.get("payment_method"),
     )
 
     for item in cart:
         detail = OrderDetail(
             quantity=item["quantity"],
             price_unit=item["price"],
-            total=item["quantity"] * item["price"],
             color=item["color"],
             size=item["size"],
             gender=item["gender"],
+            total=item["quantity"] * item["price"],
+            payment_method=1,
+            address=1,
             order=order,  # Esto establecerá automáticamente order_id
             product_id=item["product_id"],
         )

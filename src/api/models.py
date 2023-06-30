@@ -28,6 +28,8 @@ class User(db.Model):
     )
     wishlists = db.relationship("Wishlist", backref="user", lazy=True)
     product = db.relationship("Product", backref="user", lazy=True)
+    unlock_codes = db.relationship("UnlockCode", backref="user", lazy=True)
+    asigned_codes = db.relationship("AsignedCode", backref="user", lazy=True)
 
     def __repr__(self):
         return f"<User {self.email}>"
@@ -182,23 +184,47 @@ class TokenBlokedList(db.Model):
         }
 
 
-# from flask_sqlalchemy import SQLAlchemy
-# from .db import db
+class UnlockCode(db.Model):
+    __tablename__ = "unlock_code"
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(6), unique=True, nullable=False)
+    is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=True)
+
+    requested_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+
+    def __repr__(self):
+        return f"<UnlockCode {self.code}>"
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "code": self.code,
+            "is_active": self.is_active,
+            "user_id": self.user_id,
+            "requested_at": self.requested_at,
+        }
 
 
-# class User(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     email = db.Column(db.String(120), unique=True, nullable=False)
-#     password = db.Column(db.String(256), unique=False, nullable=False)
-#     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
-#     imagen_id = db.relationship("Imagen")
+class AsignedCode(db.Model):
+    __tablename__ = "asigned_code"
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(6), unique=False, nullable=False)
+    is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=True)
 
-#     def __repr__(self):
-#         return f'<User {self.email}>'
+    requested_at = db.Column(db.DateTime, default=datetime.utcnow)
 
-#     def serialize(self):
-#         return {
-#             "id": self.id,
-#             "email": self.email,
-#             # do not serialize the password, its a security breach
-#         }
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+
+    def __repr__(self):
+        return f"<UnlockCode {self.code}>"
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "code": self.code,
+            "is_active": self.is_active,
+            "user_id": self.user_id,
+            "requested_at": self.requested_at,
+        }

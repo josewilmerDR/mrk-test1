@@ -21,6 +21,9 @@ export function MainListItems() {
   const goToDashboard = () => {
     navigate("/dashboard-seller");
   };
+  const goToMyCode = () => {
+    navigate("/my-code");
+  };
   return (
     <>
       <React.Fragment>
@@ -59,6 +62,12 @@ export function MainListItems() {
             <LocalMallIcon />
           </ListItemIcon>
           <ListItemText primary="Mis productos" />
+        </ListItemButton>
+        <ListItemButton onClick={goToMyCode}>
+          <ListItemIcon>
+            <LocalMallIcon />
+          </ListItemIcon>
+          <ListItemText primary="PIN TEMPORAL" />
         </ListItemButton>
       </React.Fragment>
       ;
