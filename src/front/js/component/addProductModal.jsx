@@ -19,7 +19,7 @@ const AddProductModal = ({ open, onClose, onSave }) => {
   const [image, setImage] = useState('');
   const [price, setPrice] = useState('');
   const [stock, setStock] = useState('');
-  const [color, setSColor] = useState('');
+  const [color, setColor] = useState('');
   const [size, setSize] = useState('');
   const [gender, setGender] = useState('');
 
