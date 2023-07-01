@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 4d1653c6b6c7
+Revision ID: 66c55d86a0ee
 Revises: 
-Create Date: 2023-06-26 20:12:53.479494
+Create Date: 2023-06-30 06:29:26.066159
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '4d1653c6b6c7'
+revision = '66c55d86a0ee'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -70,6 +70,15 @@ def upgrade():
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email')
     )
+    op.create_table('asigned_code',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('code', sa.String(length=6), nullable=False),
+    sa.Column('is_active', sa.Boolean(), nullable=False),
+    sa.Column('requested_at', sa.DateTime(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('imagen',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('ruta', sa.String(length=300), nullable=False),
@@ -120,6 +129,16 @@ def upgrade():
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('unlock_code',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('code', sa.String(length=6), nullable=False),
+    sa.Column('is_active', sa.Boolean(), nullable=False),
+    sa.Column('requested_at', sa.DateTime(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('code')
     )
     op.create_table('order_delivery_address',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -185,12 +204,12 @@ def upgrade():
     )
     op.create_table('order_detail',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('quantity', sa.String(length=120), nullable=False),
+    sa.Column('quantity', sa.Float(), nullable=False),
     sa.Column('price_unit', sa.Float(), nullable=False),
-    sa.Column('total', sa.Float(), nullable=False),
-    sa.Column('color', sa.String(length=120), nullable=True),
+    sa.Column('color', sa.String(length=120), nullable=False),
     sa.Column('size', sa.String(length=120), nullable=True),
     sa.Column('gender', sa.String(length=120), nullable=True),
+    sa.Column('total', sa.Float(), nullable=False),
     sa.Column('payment_method', sa.Integer(), nullable=True),
     sa.Column('address', sa.Integer(), nullable=True),
     sa.Column('order_id', sa.Integer(), nullable=True),
@@ -244,10 +263,12 @@ def downgrade():
     op.drop_table('product')
     op.drop_table('payment')
     op.drop_table('order_delivery_address')
+    op.drop_table('unlock_code')
     op.drop_table('seller')
     op.drop_table('order')
     op.drop_table('markett_transaction')
     op.drop_table('imagen')
+    op.drop_table('asigned_code')
     op.drop_table('user')
     op.drop_table('token_bloked_list')
     op.drop_table('favoritos')

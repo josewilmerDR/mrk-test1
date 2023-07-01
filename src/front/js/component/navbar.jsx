@@ -108,6 +108,10 @@ function Navbar() {
     navigate("/create-seller")
     handleMenuClose();
   }
+  const goToMyCode = () => {
+    navigate("/my-code")
+    handleMenuClose();
+  }
   const handleMenuCloseOne = () => {
     setMenuAnchorEl(null);
   };
@@ -159,6 +163,7 @@ function Navbar() {
     >
       <MenuItem onClick={goToMyProfile}>Perfll</MenuItem>
       <MenuItem onClick={goToMyAccount}>Mi cuenta</MenuItem>
+      <MenuItem onClick={goToMyCode}>PIN de autoventa</MenuItem>
       {infoUsuario ? <MenuItem onClick={goToMyAccountSeller}>Cuenta de vendedor</MenuItem> : <Button onClick={goToCreateSeller}>Crear mi cuenta de vendedor</Button>}
     </Menu>
   );

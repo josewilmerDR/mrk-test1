@@ -15,6 +15,8 @@ class Order(db.Model):
     order_total = db.Column(db.String(120), unique=False, nullable=False)
 
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    # payment_method = db.Column(db.Integer, db.ForeignKey("payment.id"))
+    # address = db.Column(db.Integer, db.ForeignKey("delivery_address.id"))
 
     order_detail = db.relationship("OrderDetail", backref="order", lazy=True)
     order_delivery = db.relationship("OrderDeliveryAddress", backref="order", lazy=True)
@@ -36,12 +38,13 @@ class Order(db.Model):
 class OrderDetail(db.Model):
     __tablename__ = "order_detail"
     id = db.Column(db.Integer, primary_key=True)
-    quantity = db.Column(db.String(120), unique=False, nullable=False)
+    quantity = db.Column(db.Float, unique=False, nullable=False)
     price_unit = db.Column(db.Float, unique=False, nullable=False)
-    total = db.Column(db.Float, unique=False, nullable=False)
-    color = db.Column(db.String(120), unique=False, nullable=True)
+    color = db.Column(db.String(120), unique=False, nullable=False)
     size = db.Column(db.String(120), unique=False, nullable=True)
     gender = db.Column(db.String(120), unique=False, nullable=True)
+
+    total = db.Column(db.Float, unique=False, nullable=False)
 
     payment_method = db.Column(db.Integer, db.ForeignKey("payment.id"))
     address = db.Column(db.Integer, db.ForeignKey("delivery_address.id"))
@@ -72,7 +75,7 @@ class DeliveryAddress(db.Model):
         "OrderDeliveryAddress", backref="delivery_address", lazy=True
     )
 
-    order_detail = db.relationship("OrderDetail", backref="delivery_address", lazy=True)
+    # order_detail = db.relationship("OrderDetail", backref="delivery_address", lazy=True)
 
     def __repr__(self):
         return f"<Delivery {self.id}>"

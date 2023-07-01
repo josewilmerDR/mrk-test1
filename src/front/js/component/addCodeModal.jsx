@@ -11,7 +11,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Grid } from '@mui/material';
 import "../../styles/addProductModal.css"
 
-const AddProductModal = ({ open, onClose, onSave }) => {
+const AddCode = ({ open, onClose, onSave }) => {
   const [previewImage, setPreviewImage] = useState(null);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -19,7 +19,7 @@ const AddProductModal = ({ open, onClose, onSave }) => {
   const [image, setImage] = useState('');
   const [price, setPrice] = useState('');
   const [stock, setStock] = useState('');
-  const [color, setColor] = useState('');
+  const [color, setSColor] = useState('');
   const [size, setSize] = useState('');
   const [gender, setGender] = useState('');
 
@@ -155,7 +155,7 @@ const AddProductModal = ({ open, onClose, onSave }) => {
 
   return (
     <Dialog open={open} >
-      <DialogTitle>Agregar Producto</DialogTitle>
+      <DialogTitle>Obtener PIN</DialogTitle>
       <DialogContent
         sx={{
           width: '600px',
@@ -341,4 +341,4 @@ const AddProductModal = ({ open, onClose, onSave }) => {
   );
 };
 
-export default AddProductModal;
+export default AddCode;
